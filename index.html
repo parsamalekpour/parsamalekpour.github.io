@@ -1,448 +1,714 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Dynamic Pixel LCD Simulator with Custom Chars</title>
- <script src="https://cdn.tailwindcss.com"></script>
- <style>
- body {
- background-color: #0a192f;
- font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
- transition: background-color 0.3s ease;
- }
- .lcd-container {
- background-color: #000000;
- padding: 10px;
- border-radius: 12px;
- box-shadow: 0 10px 25px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,0,0,0.7);
- border: 2px solid #172a45;
- transition: all 0.3s ease;
- max-width: 95vw;
- }
- #lcd-screen {
- background-color: #0a192f;
- display: grid;
- gap: 0.5px; /* کاهش فاصله */
- padding: 10px;
- border-radius: 5px;
- border: 1px solid #172a45;
- transition: all 0.3s ease;
- }
- .char-canvas {
- width: 100%;
- height: 100%;
- }
- .theme-controls label {
- cursor: pointer;
- padding: 10px;
- border-radius: 6px;
- transition: all 0.2s ease;
- border: 2px solid transparent;
- display: flex;
- align-items: center;
- justify-content: center;
- width: 100%;
- height: 100%;
- font-weight: 500;
- }
- .theme-controls input:checked + label {
- border-color: #ffffff;
- box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
- }
- .control-panel {
- display: grid;
- grid-template-columns: 1fr;
- gap: 1rem;
- }
- @media (min-width: 1024px) {
- .control-panel {
- grid-template-columns: repeat(3, 1fr);
- }
- }
- @media (min-width: 640px) and (max-width: 1023px) {
- .control-panel {
- grid-template-columns: 1fr 1fr;
- }
- .control-panel > div:last-child {
- grid-column: span 2;
- }
- }
- </style>
-</head>
-<body class="flex items-center justify-center min-h-screen p-4">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dynamic Pixel LCD Simulator with Custom Chars</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        background-color: #0a192f;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        transition: background-color 0.3s ease;
+      }
+      .lcd-container {
+        background-color: #000000;
+        padding: 10px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5),
+          inset 0 0 10px rgba(0, 0, 0, 0.7);
+        border: 2px solid #172a45;
+        transition: all 0.3s ease;
+        max-width: 95vw;
+      }
+      #lcd-screen {
+        background-color: #0a192f;
+        display: grid;
+        gap: 0.5px; /* کاهش فاصله */
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #172a45;
+        transition: all 0.3s ease;
+      }
+      .char-canvas {
+        width: 100%;
+        height: 100%;
+      }
+      .theme-controls label {
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        border: 2px solid transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        font-weight: 500;
+      }
+      .theme-controls input:checked + label {
+        border-color: #ffffff;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+      }
+      .control-panel {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      @media (min-width: 1024px) {
+        .control-panel {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      @media (min-width: 640px) and (max-width: 1023px) {
+        .control-panel {
+          grid-template-columns: 1fr 1fr;
+        }
+        .control-panel > div:last-child {
+          grid-column: span 2;
+        }
+      }
+    </style>
+  </head>
+  <body class="flex items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-6xl mx-auto flex flex-col items-center">
+      <h1
+        id="main-title"
+        class="text-2xl md:text-3xl font-bold text-center text-gray-200 mb-6 transition-colors duration-300"
+      >
+        Dynamic Pixel LCD Simulator
+      </h1>
 
- <div class="w-full max-w-6xl mx-auto flex flex-col items-center">
- <h1 id="main-title" class="text-2xl md:text-3xl font-bold text-center text-gray-200 mb-6 transition-colors duration-300">Dynamic Pixel LCD Simulator</h1>
+      <div id="lcd-container" class="lcd-container">
+        <div id="lcd-screen">
+          <!-- Canvas ها به صورت پویا اینجا اضافه می‌شوند -->
+        </div>
+      </div>
 
- <div id="lcd-container" class="lcd-container">
- <div id="lcd-screen">
- <!-- Canvas ها به صورت پویا اینجا اضافه می‌شوند -->
- </div>
- </div>
+      <div class="mt-8 w-full max-w-6xl">
+        <textarea
+          id="text-input"
+          rows="3"
+          class="w-full p-3 bg-gray-800 text-gray-200 border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-left"
+          placeholder="Enter text here... Use \0 to \7 for custom characters."
+        ></textarea>
+      </div>
 
- <div class="mt-8 w-full max-w-6xl">
- <textarea
- id="text-input"
- rows="3"
- class="w-full p-3 bg-gray-800 text-gray-200 border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-left"
- placeholder="Enter text here... Use \0 to \7 for custom characters."
- ></textarea>
- </div>
+      <div class="control-panel w-full max-w-6xl mt-6 gap-6">
+        <!-- کنترل‌های ابعاد و دانلود -->
+        <div class="p-4 bg-gray-900/50 rounded-lg">
+          <h2
+            class="panel-title text-lg font-bold text-white mb-4 text-center transition-colors duration-300"
+          >
+            Display Controls
+          </h2>
+          <div class="grid grid-cols-2 gap-4 items-center">
+            <div>
+              <label for="cols-input" class="block text-sm text-gray-300 mb-1"
+                >Columns</label
+              >
+              <input
+                type="number"
+                id="cols-input"
+                value="20"
+                min="1"
+                max="40"
+                class="w-full p-2 rounded bg-gray-700 text-white border border-gray-600"
+              />
+            </div>
+            <div>
+              <label for="rows-input" class="block text-sm text-gray-300 mb-1"
+                >Rows</label
+              >
+              <input
+                type="number"
+                id="rows-input"
+                value="2"
+                min="1"
+                max="10"
+                class="w-full p-2 rounded bg-gray-700 text-white border border-gray-600"
+              />
+            </div>
+          </div>
+          <button
+            id="update-display-btn"
+            class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition"
+          >
+            Update Display
+          </button>
+          <button
+            id="download-btn"
+            class="w-full mt-2 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition"
+          >
+            Download Image
+          </button>
+        </div>
 
- <div class="control-panel w-full max-w-6xl mt-6 gap-6">
- <!-- کنترل‌های ابعاد و دانلود -->
- <div class="p-4 bg-gray-900/50 rounded-lg">
- <h2 class="panel-title text-lg font-bold text-white mb-4 text-center transition-colors duration-300">Display Controls</h2>
- <div class="grid grid-cols-2 gap-4 items-center">
- <div>
- <label for="cols-input" class="block text-sm text-gray-300 mb-1">Columns</label>
- <input type="number" id="cols-input" value="20" min="1" max="40" class="w-full p-2 rounded bg-gray-700 text-white border border-gray-600">
- </div>
- <div>
- <label for="rows-input" class="block text-sm text-gray-300 mb-1">Rows</label>
- <input type="number" id="rows-input" value="2" min="1" max="10" class="w-full p-2 rounded bg-gray-700 text-white border border-gray-600">
- </div>
- </div>
- <button id="update-display-btn" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition">
- Update Display
- </button>
- <button id="download-btn" class="w-full mt-2 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition">
- Download Image
- </button>
- </div>
+        <!-- کنترل‌های تم -->
+        <div class="p-4 bg-gray-900/50 rounded-lg">
+          <h2
+            class="panel-title text-lg font-bold text-white mb-4 text-center transition-colors duration-300"
+          >
+            Color Theme
+          </h2>
+          <div class="grid grid-cols-2 gap-4 text-sm theme-controls">
+            <!-- دکمه‌های رادیویی به صورت پویا اینجا اضافه می‌شوند -->
+          </div>
+        </div>
 
- <!-- کنترل‌های تم -->
- <div class="p-4 bg-gray-900/50 rounded-lg">
- <h2 class="panel-title text-lg font-bold text-white mb-4 text-center transition-colors duration-300">Color Theme</h2>
- <div class="grid grid-cols-2 gap-4 text-sm theme-controls">
- <!-- دکمه‌های رادیویی به صورت پویا اینجا اضافه می‌شوند -->
- </div>
- </div>
+        <!-- کنترل‌های کاراکتر سفارشی -->
+        <div class="p-4 bg-gray-900/50 rounded-lg">
+          <h2
+            class="panel-title text-lg font-bold text-white mb-4 text-center transition-colors duration-300"
+          >
+            Custom Characters
+          </h2>
+          <div id="custom-char-controls" class="space-y-2">
+            <!-- ورودی‌ها به صورت پویا با جاوااسکریپت ساخته می‌شوند -->
+          </div>
+          <button
+            id="save-chars-btn"
+            class="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition"
+          >
+            Save Custom Chars
+          </button>
+        </div>
+      </div>
+    </div>
 
- <!-- کنترل‌های کاراکتر سفارشی -->
- <div class="p-4 bg-gray-900/50 rounded-lg">
- <h2 class="panel-title text-lg font-bold text-white mb-4 text-center transition-colors duration-300">Custom Characters</h2>
- <div id="custom-char-controls" class="space-y-2">
- <!-- ورودی‌ها به صورت پویا با جاوااسکریپت ساخته می‌شوند -->
- </div>
- <button id="save-chars-btn" class="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition">
- Save Custom Chars
- </button>
- </div>
- </div>
- </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Complete HD44780 A00 ROM Character Set
+        const FONT_5x8 = {
+          " ": [0x00, 0x00, 0x00, 0x00, 0x00],
+          "!": [0x00, 0x00, 0x5f, 0x00, 0x00],
+          '"': [0x00, 0x07, 0x00, 0x07, 0x00],
+          "#": [0x14, 0x7f, 0x14, 0x7f, 0x14],
+          $: [0x24, 0x2a, 0x7f, 0x2a, 0x12],
+          "%": [0x62, 0x64, 0x08, 0x13, 0x23],
+          "&": [0x36, 0x49, 0x55, 0x22, 0x50],
+          "'": [0x00, 0x05, 0x03, 0x00, 0x00],
+          "(": [0x00, 0x1c, 0x22, 0x41, 0x00],
+          ")": [0x00, 0x41, 0x22, 0x1c, 0x00],
+          "*": [0x14, 0x08, 0x3e, 0x08, 0x14],
+          "+": [0x08, 0x08, 0x3e, 0x08, 0x08],
+          ",": [0x00, 0x50, 0x30, 0x00, 0x00],
+          "-": [0x08, 0x08, 0x08, 0x08, 0x08],
+          ".": [0x00, 0x60, 0x60, 0x00, 0x00],
+          "/": [0x20, 0x10, 0x08, 0x04, 0x02],
+          0: [0x3e, 0x51, 0x49, 0x45, 0x3e],
+          1: [0x00, 0x42, 0x7f, 0x40, 0x00],
+          2: [0x42, 0x61, 0x51, 0x49, 0x46],
+          3: [0x21, 0x41, 0x45, 0x4b, 0x31],
+          4: [0x18, 0x14, 0x12, 0x7f, 0x10],
+          5: [0x27, 0x45, 0x45, 0x45, 0x39],
+          6: [0x3c, 0x4a, 0x49, 0x49, 0x30],
+          7: [0x01, 0x71, 0x09, 0x05, 0x03],
+          8: [0x36, 0x49, 0x49, 0x49, 0x36],
+          9: [0x06, 0x49, 0x49, 0x29, 0x1e],
+          ":": [0x00, 0x36, 0x36, 0x00, 0x00],
+          ";": [0x00, 0x56, 0x36, 0x00, 0x00],
+          "<": [0x08, 0x14, 0x22, 0x41, 0x00],
+          "=": [0x14, 0x14, 0x14, 0x14, 0x14],
+          ">": [0x00, 0x41, 0x22, 0x14, 0x08],
+          "?": [0x02, 0x01, 0x51, 0x09, 0x06],
+          "@": [0x32, 0x49, 0x79, 0x41, 0x3e],
+          A: [0x7e, 0x11, 0x11, 0x11, 0x7e],
+          B: [0x7f, 0x49, 0x49, 0x49, 0x36],
+          C: [0x3e, 0x41, 0x41, 0x41, 0x22],
+          D: [0x7f, 0x41, 0x41, 0x22, 0x1c],
+          E: [0x7f, 0x49, 0x49, 0x49, 0x41],
+          F: [0x7f, 0x09, 0x09, 0x09, 0x01],
+          G: [0x3e, 0x41, 0x49, 0x49, 0x7a],
+          H: [0x7f, 0x08, 0x08, 0x08, 0x7f],
+          I: [0x00, 0x41, 0x7f, 0x41, 0x00],
+          J: [0x20, 0x40, 0x41, 0x3f, 0x01],
+          K: [0x7f, 0x08, 0x14, 0x22, 0x41],
+          L: [0x7f, 0x40, 0x40, 0x40, 0x40],
+          M: [0x7f, 0x02, 0x04, 0x02, 0x7f],
+          N: [0x7f, 0x04, 0x08, 0x10, 0x7f],
+          O: [0x3e, 0x41, 0x41, 0x41, 0x3e],
+          P: [0x7f, 0x09, 0x09, 0x09, 0x06],
+          Q: [0x3e, 0x41, 0x51, 0x21, 0x5e],
+          R: [0x7f, 0x09, 0x19, 0x29, 0x46],
+          S: [0x46, 0x49, 0x49, 0x49, 0x31],
+          T: [0x01, 0x01, 0x7f, 0x01, 0x01],
+          U: [0x3f, 0x40, 0x40, 0x40, 0x3f],
+          V: [0x1f, 0x20, 0x40, 0x20, 0x1f],
+          W: [0x3f, 0x40, 0x38, 0x40, 0x3f],
+          X: [0x63, 0x14, 0x08, 0x14, 0x63],
+          Y: [0x07, 0x08, 0x70, 0x08, 0x07],
+          Z: [0x61, 0x51, 0x49, 0x45, 0x43],
+          "[": [0x00, 0x7f, 0x41, 0x41, 0x00],
+          "¥": [0x02, 0x04, 0x08, 0x10, 0x20],
+          "]": [0x00, 0x41, 0x41, 0x7f, 0x00],
+          "^": [0x04, 0x02, 0x01, 0x02, 0x04],
+          _: [0x40, 0x40, 0x40, 0x40, 0x40],
+          "`": [0x01, 0x02, 0x04, 0x00, 0x00],
+          a: [0x20, 0x54, 0x54, 0x54, 0x78],
+          b: [0x7f, 0x48, 0x48, 0x48, 0x30],
+          c: [0x38, 0x44, 0x44, 0x44, 0x20],
+          d: [0x30, 0x48, 0x48, 0x48, 0x7f],
+          e: [0x38, 0x54, 0x54, 0x54, 0x18],
+          f: [0x08, 0x7e, 0x09, 0x01, 0x02],
+          g: [0x08, 0x14, 0x54, 0x54, 0x3c],
+          h: [0x7f, 0x08, 0x04, 0x04, 0x78],
+          i: [0x00, 0x44, 0x7d, 0x40, 0x00],
+          j: [0x20, 0x40, 0x44, 0x3d, 0x00],
+          k: [0x7f, 0x10, 0x28, 0x44, 0x00],
+          l: [0x00, 0x41, 0x7f, 0x40, 0x00],
+          m: [0x7c, 0x04, 0x18, 0x04, 0x78],
+          n: [0x7c, 0x08, 0x04, 0x04, 0x78],
+          o: [0x38, 0x44, 0x44, 0x44, 0x38],
+          p: [0x7c, 0x14, 0x14, 0x14, 0x08],
+          q: [0x08, 0x14, 0x14, 0x08, 0x7c],
+          r: [0x7c, 0x08, 0x04, 0x04, 0x08],
+          s: [0x48, 0x54, 0x54, 0x54, 0x20],
+          t: [0x04, 0x3f, 0x44, 0x40, 0x20],
+          u: [0x3c, 0x40, 0x40, 0x20, 0x7c],
+          v: [0x1c, 0x20, 0x40, 0x20, 0x1c],
+          w: [0x3c, 0x40, 0x30, 0x40, 0x3c],
+          x: [0x44, 0x28, 0x10, 0x28, 0x44],
+          y: [0x0c, 0x50, 0x50, 0x50, 0x3c],
+          z: [0x44, 0x64, 0x54, 0x4c, 0x44],
+          "{": [0x08, 0x14, 0x22, 0x41, 0x00],
+          "|": [0x00, 0x00, 0x7f, 0x00, 0x00],
+          "}": [0x00, 0x41, 0x22, 0x14, 0x08],
+          "\u2192": [0x08, 0x04, 0x08, 0x04, 0x08],
+          "\u2190": [0x10, 0x20, 0x10, 0x20, 0x10],
+          "\uFF61": [0x00, 0x0c, 0x12, 0x12, 0x0c],
+          "\uFF62": [0x00, 0x00, 0x06, 0x09, 0x09],
+          "\uFF63": [0x00, 0x09, 0x09, 0x06, 0x00],
+          "\uFF64": [0x00, 0x14, 0x08, 0x00, 0x00],
+          "\u30FB": [0x00, 0x08, 0x08, 0x08, 0x00],
+          "\uFF66": [0x3e, 0x49, 0x49, 0x49, 0x3e],
+          "\uFF71": [0x0f, 0x11, 0x11, 0x11, 0x0f],
+          "\uFF72": [0x00, 0x7d, 0x41, 0x41, 0x41],
+          "\uFF73": [0x3d, 0x40, 0x40, 0x40, 0x3d],
+          "\uFF74": [0x7f, 0x49, 0x49, 0x49, 0x41],
+          "\uFF75": [0x3e, 0x41, 0x41, 0x41, 0x3e],
+          "\uFF76": [0x7f, 0x08, 0x08, 0x08, 0x08],
+          "\uFF77": [0x08, 0x14, 0x54, 0x54, 0x3c],
+          "\uFF78": [0x7f, 0x40, 0x40, 0x40, 0x20],
+          "\uFF79": [0x7f, 0x12, 0x12, 0x12, 0x12],
+          "\uFF7A": [0x08, 0x7f, 0x49, 0x49, 0x00],
+          "\uFF7B": [0x1f, 0x24, 0x24, 0x24, 0x1f],
+          "\uFF7C": [0x7f, 0x49, 0x49, 0x49, 0x32],
+          "\uFF7D": [0x01, 0x01, 0x7f, 0x41, 0x41],
+          "\uFF7E": [0x7f, 0x40, 0x40, 0x20, 0x7f],
+          "\uFF7F": [0x41, 0x41, 0x41, 0x7f, 0x00],
+          "\uFF80": [0x01, 0x01, 0x7f, 0x01, 0x01],
+          "\uFF81": [0x7f, 0x08, 0x24, 0x24, 0x1a],
+          "\uFF82": [0x0e, 0x11, 0x11, 0x11, 0x0e],
+          "\uFF83": [0x04, 0x04, 0x7c, 0x04, 0x04],
+          "\uFF84": [0x7f, 0x40, 0x40, 0x40, 0x40],
+          "\uFF85": [0x7f, 0x04, 0x08, 0x10, 0x7f],
+          "\uFF86": [0x7f, 0x02, 0x02, 0x02, 0x02],
+          "\uFF87": [0x7f, 0x20, 0x10, 0x20, 0x7f],
+          "\uFF88": [0x7f, 0x20, 0x10, 0x08, 0x7f],
+          "\uFF89": [0x7f, 0x08, 0x14, 0x22, 0x41],
+          "\uFF8A": [0x7f, 0x08, 0x08, 0x08, 0x7f],
+          "\uFF8B": [0x7f, 0x49, 0x49, 0x49, 0x7f],
+          "\uFF8C": [0x7f, 0x09, 0x09, 0x09, 0x01],
+          "\uFF8D": [0x7f, 0x09, 0x09, 0x09, 0x06],
+          "\uFF8E": [0x7f, 0x41, 0x41, 0x41, 0x7f],
+          "\uFF8F": [0x7f, 0x02, 0x04, 0x02, 0x7f],
+          "\uFF90": [0x7f, 0x02, 0x7f, 0x02, 0x7f],
+          "\uFF91": [0x7f, 0x20, 0x10, 0x20, 0x1f],
+          "\uFF92": [0x7f, 0x20, 0x10, 0x08, 0x04],
+          "\uFF93": [0x7f, 0x40, 0x38, 0x40, 0x3f],
+          "\uFF94": [0x07, 0x08, 0x70, 0x08, 0x07],
+          "\uFF95": [0x3f, 0x40, 0x40, 0x40, 0x3f],
+          "\uFF96": [0x3f, 0x40, 0x38, 0x40, 0x3f],
+          "\uFF97": [0x7c, 0x08, 0x04, 0x04, 0x08],
+          "\uFF98": [0x7f, 0x40, 0x40, 0x20, 0x7f],
+          "\uFF99": [0x7f, 0x40, 0x40, 0x40, 0x20],
+          "\uFF9A": [0x7f, 0x40, 0x40, 0x20, 0x7f],
+          "\uFF9B": [0x7f, 0x40, 0x40, 0x40, 0x40],
+          "\uFF9C": [0x0f, 0x10, 0x10, 0x10, 0x0f],
+          "\uFF9D": [0x7f, 0x04, 0x08, 0x10, 0x7f],
+          "\uFF9E": [0x00, 0x06, 0x09, 0x09, 0x06],
+          "\uFF9F": [0x00, 0x0c, 0x12, 0x12, 0x0c],
+          "\u03B1": [0x20, 0x54, 0x54, 0x54, 0x78],
+          "\u00DF": [0x7f, 0x49, 0x49, 0x49, 0x36],
+          "\u0393": [0x7f, 0x01, 0x01, 0x01, 0x01],
+          "\u03C0": [0x01, 0x01, 0x7f, 0x01, 0x01],
+          "\u03A3": [0x46, 0x49, 0x49, 0x49, 0x31],
+          "\u03C3": [0x38, 0x44, 0x44, 0x44, 0x38],
+          "\u00B5": [0x3c, 0x40, 0x40, 0x20, 0x7c],
+          "\u03C4": [0x04, 0x3f, 0x44, 0x40, 0x20],
+          "\u03A6": [0x3e, 0x41, 0x7f, 0x41, 0x3e],
+          "\u0398": [0x3e, 0x41, 0x41, 0x41, 0x3e],
+          "\u03A9": [0x3f, 0x40, 0x38, 0x40, 0x3f],
+          "\u03B4": [0x30, 0x48, 0x48, 0x48, 0x7f],
+          "\u221E": [0x24, 0x52, 0x24, 0x52, 0x24],
+          "\u00F1": [0x0e, 0x01, 0x7c, 0x08, 0x04],
+          "\u00E9": [0x02, 0x38, 0x54, 0x54, 0x18],
+          "\u2229": [0x3f, 0x40, 0x40, 0x40, 0x3f],
+          "\u2261": [0x14, 0x14, 0x00, 0x14, 0x14],
+          "\u00B1": [0x08, 0x08, 0x3e, 0x08, 0x08],
+          "\u00F7": [0x08, 0x3e, 0x08, 0x00, 0x00],
+          "\u25A0": [0x7f, 0x7f, 0x7f, 0x7f, 0x7f],
+        };
 
- <script>
- document.addEventListener('DOMContentLoaded', () => {
- // Complete HD44780 A00 ROM Character Set
- const FONT_5x8 = {
- ' ': [0x00,0x00,0x00,0x00,0x00],'!': [0x00,0x00,0x5f,0x00,0x00],'"': [0x00,0x07,0x00,0x07,0x00],'#': [0x14,0x7f,0x14,0x7f,0x14],
- '$': [0x24,0x2a,0x7f,0x2a,0x12],'%': [0x62,0x64,0x08,0x13,0x23],'&': [0x36,0x49,0x55,0x22,0x50],'\'':[0x00,0x05,0x03,0x00,0x00],
- '(': [0x00,0x1c,0x22,0x41,0x00],')': [0x00,0x41,0x22,0x1c,0x00],'*': [0x14,0x08,0x3e,0x08,0x14],'+': [0x08,0x08,0x3e,0x08,0x08],
- ',': [0x00,0x50,0x30,0x00,0x00],'-': [0x08,0x08,0x08,0x08,0x08],'.': [0x00,0x60,0x60,0x00,0x00],'/': [0x20,0x10,0x08,0x04,0x02],
- '0': [0x3e,0x51,0x49,0x45,0x3e],'1': [0x00,0x42,0x7f,0x40,0x00],'2': [0x42,0x61,0x51,0x49,0x46],'3': [0x21,0x41,0x45,0x4b,0x31],
- '4': [0x18,0x14,0x12,0x7f,0x10],'5': [0x27,0x45,0x45,0x45,0x39],'6': [0x3c,0x4a,0x49,0x49,0x30],'7': [0x01,0x71,0x09,0x05,0x03],
- '8': [0x36,0x49,0x49,0x49,0x36],'9': [0x06,0x49,0x49,0x29,0x1e],':': [0x00,0x36,0x36,0x00,0x00],';': [0x00,0x56,0x36,0x00,0x00],
- '<': [0x08,0x14,0x22,0x41,0x00],'=': [0x14,0x14,0x14,0x14,0x14],'>': [0x00,0x41,0x22,0x14,0x08],"?":[0x02,0x01,0x51,0x09,0x06],
- '@': [0x32,0x49,0x79,0x41,0x3e],'A': [0x7e,0x11,0x11,0x11,0x7e],'B': [0x7f,0x49,0x49,0x49,0x36],'C': [0x3e,0x41,0x41,0x41,0x22],
- 'D': [0x7f,0x41,0x41,0x22,0x1c],'E': [0x7f,0x49,0x49,0x49,0x41],'F': [0x7f,0x09,0x09,0x09,0x01],'G': [0x3e,0x41,0x49,0x49,0x7a],
- 'H': [0x7f,0x08,0x08,0x08,0x7f],'I': [0x00,0x41,0x7f,0x41,0x00],'J': [0x20,0x40,0x41,0x3f,0x01],'K': [0x7f,0x08,0x14,0x22,0x41],
- 'L': [0x7f,0x40,0x40,0x40,0x40],'M': [0x7f,0x02,0x04,0x02,0x7f],'N': [0x7f,0x04,0x08,0x10,0x7f],'O': [0x3e,0x41,0x41,0x41,0x3e],
- 'P': [0x7f,0x09,0x09,0x09,0x06],'Q': [0x3e,0x41,0x51,0x21,0x5e],'R': [0x7f,0x09,0x19,0x29,0x46],'S': [0x46,0x49,0x49,0x49,0x31],
- 'T': [0x01,0x01,0x7f,0x01,0x01],'U': [0x3f,0x40,0x40,0x40,0x3f],'V': [0x1f,0x20,0x40,0x20,0x1f],'W': [0x3f,0x40,0x38,0x40,0x3f],
-'X': [0x63,0x14,0x08,0x14,0x63],'Y': [0x07,0x08,0x70,0x08,0x07],'Z': [0x61,0x51,0x49,0x45,0x43],"[":[0x00,0x7f,0x41,0x41,0x00],
-'¥': [0x02,0x04,0x08,0x10,0x20],']': [0x00,0x41,0x41,0x7f,0x00],'^': [0x04,0x02,0x01,0x02,0x04],'_': [0x40,0x40,0x40,0x40,0x40],
-'`': [0x01,0x02,0x04,0x00,0x00],'a': [0x20,0x54,0x54,0x54,0x78],'b': [0x7f,0x48,0x48,0x48,0x30],'c': [0x38,0x44,0x44,0x44,0x20],
-'d': [0x30,0x48,0x48,0x48,0x7f],'e': [0x38,0x54,0x54,0x54,0x18],'f': [0x08,0x7e,0x09,0x01,0x02],'g': [0x08,0x14,0x54,0x54,0x3c],
-'h': [0x7f,0x08,0x04,0x04,0x78],'i': [0x00,0x44,0x7d,0x40,0x00],'j': [0x20,0x40,0x44,0x3d,0x00],'k': [0x7f,0x10,0x28,0x44,0x00],
-'l': [0x00,0x41,0x7f,0x40,0x00],'m': [0x7c,0x04,0x18,0x04,0x78],'n': [0x7c,0x08,0x04,0x04,0x78],'o': [0x38,0x44,0x44,0x44,0x38],
-'p': [0x7c,0x14,0x14,0x14,0x08],'q': [0x08,0x14,0x14,0x08,0x7c],'r': [0x7c,0x08,0x04,0x04,0x08],'s': [0x48,0x54,0x54,0x54,0x20],
-'t': [0x04,0x3f,0x44,0x40,0x20],'u': [0x3c,0x40,0x40,0x20,0x7c],'v': [0x1c,0x20,0x40,0x20,0x1c],'w': [0x3c,0x40,0x30,0x40,0x3c],
-'x': [0x44,0x28,0x10,0x28,0x44],'y': [0x0c,0x50,0x50,0x50,0x3c],'z': [0x44,0x64,0x54,0x4c,0x44],'{': [0x08,0x14,0x22,0x41,0x00],
-'|': [0x00,0x00,0x7f,0x00,0x00],'}': [0x00,0x41,0x22,0x14,0x08],'\u2192':[0x08,0x04,0x08,0x04,0x08],'\u2190':[0x10,0x20,0x10,0x20,0x10],
-'\uFF61':[0x00,0x0c,0x12,0x12,0x0c],'\uFF62':[0x00,0x00,0x06,0x09,0x09],'\uFF63':[0x00,0x09,0x09,0x06,0x00],'\uFF64':[0x00,0x14,0x08,0x00,0x00],
-'\u30FB':[0x00,0x08,0x08,0x08,0x00],'\uFF66':[0x3e,0x49,0x49,0x49,0x3e],'\uFF71':[0x0f,0x11,0x11,0x11,0x0f],'\uFF72':[0x00,0x7d,0x41,0x41,0x41],
-'\uFF73':[0x3d,0x40,0x40,0x40,0x3d],'\uFF74':[0x7f,0x49,0x49,0x49,0x41],'\uFF75':[0x3e,0x41,0x41,0x41,0x3e],'\uFF76':[0x7f,0x08,0x08,0x08,0x08],
-'\uFF77':[0x08,0x14,0x54,0x54,0x3c],'\uFF78':[0x7f,0x40,0x40,0x40,0x20],'\uFF79':[0x7f,0x12,0x12,0x12,0x12],'\uFF7A':[0x08,0x7f,0x49,0x49,0x00],
-'\uFF7B':[0x1f,0x24,0x24,0x24,0x1f],'\uFF7C':[0x7f,0x49,0x49,0x49,0x32],'\uFF7D':[0x01,0x01,0x7f,0x41,0x41],'\uFF7E':[0x7f,0x40,0x40,0x20,0x7f],
-'\uFF7F':[0x41,0x41,0x41,0x7f,0x00],'\uFF80':[0x01,0x01,0x7f,0x01,0x01],'\uFF81':[0x7f,0x08,0x24,0x24,0x1a],'\uFF82':[0x0e,0x11,0x11,0x11,0x0e],
-'\uFF83':[0x04,0x04,0x7c,0x04,0x04],'\uFF84':[0x7f,0x40,0x40,0x40,0x40],'\uFF85':[0x7f,0x04,0x08,0x10,0x7f],'\uFF86':[0x7f,0x02,0x02,0x02,0x02],
-'\uFF87':[0x7f,0x20,0x10,0x20,0x7f],'\uFF88':[0x7f,0x20,0x10,0x08,0x7f],'\uFF89':[0x7f,0x08,0x14,0x22,0x41],'\uFF8A':[0x7f,0x08,0x08,0x08,0x7f],
-'\uFF8B':[0x7f,0x49,0x49,0x49,0x7f],'\uFF8C':[0x7f,0x09,0x09,0x09,0x01],'\uFF8D':[0x7f,0x09,0x09,0x09,0x06],'\uFF8E':[0x7f,0x41,0x41,0x41,0x7f],
-'\uFF8F':[0x7f,0x02,0x04,0x02,0x7f],'\uFF90':[0x7f,0x02,0x7f,0x02,0x7f],'\uFF91':[0x7f,0x20,0x10,0x20,0x1f],'\uFF92':[0x7f,0x20,0x10,0x08,0x04],
-'\uFF93':[0x7f,0x40,0x38,0x40,0x3f],'\uFF94':[0x07,0x08,0x70,0x08,0x07],'\uFF95':[0x3f,0x40,0x40,0x40,0x3f],'\uFF96':[0x3f,0x40,0x38,0x40,0x3f],
-'\uFF97':[0x7c,0x08,0x04,0x04,0x08],'\uFF98':[0x7f,0x40,0x40,0x20,0x7f],'\uFF99':[0x7f,0x40,0x40,0x40,0x20],'\uFF9A':[0x7f,0x40,0x40,0x20,0x7f],
-'\uFF9B':[0x7f,0x40,0x40,0x40,0x40],'\uFF9C':[0x0f,0x10,0x10,0x10,0x0f],'\uFF9D':[0x7f,0x04,0x08,0x10,0x7f],'\uFF9E':[0x00,0x06,0x09,0x09,0x06],
-'\uFF9F':[0x00,0x0c,0x12,0x12,0x0c],'\u03B1':[0x20,0x54,0x54,0x54,0x78],'\u00DF':[0x7f,0x49,0x49,0x49,0x36],'\u0393':[0x7f,0x01,0x01,0x01,0x01],
-'\u03C0':[0x01,0x01,0x7f,0x01,0x01],'\u03A3':[0x46,0x49,0x49,0x49,0x31],'\u03C3':[0x38,0x44,0x44,0x44,0x38],'\u00B5':[0x3c,0x40,0x40,0x20,0x7c],
-'\u03C4':[0x04,0x3f,0x44,0x40,0x20],'\u03A6':[0x3e,0x41,0x7f,0x41,0x3e],'\u0398':[0x3e,0x41,0x41,0x41,0x3e],'\u03A9':[0x3f,0x40,0x38,0x40,0x3f],
-'\u03B4':[0x30,0x48,0x48,0x48,0x7f],'\u221E':[0x24,0x52,0x24,0x52,0x24],'\u00F1':[0x0e,0x01,0x7c,0x08,0x04],'\u00E9':[0x02,0x38,0x54,0x54,0x18],
-'\u2229':[0x3f,0x40,0x40,0x40,0x3f],'\u2261':[0x14,0x14,0x00,0x14,0x14],'\u00B1':[0x08,0x08,0x3e,0x08,0x08],'\u00F7':[0x08,0x3e,0x08,0x00,0x00],
-'\u25A0':[0x7f,0x7f,0x7f,0x7f,0x7f]
-};
+        const lcdContainer = document.getElementById("lcd-container");
+        const lcdScreen = document.getElementById("lcd-screen");
+        const textInput = document.getElementById("text-input");
+        const themeSelector = document.querySelector(".theme-controls");
+        const colsInput = document.getElementById("cols-input");
+        const rowsInput = document.getElementById("rows-input");
+        const updateDisplayBtn = document.getElementById("update-display-btn");
+        const downloadBtn = document.getElementById("download-btn");
+        const customCharControls = document.getElementById(
+          "custom-char-controls"
+        );
+        const saveCharsBtn = document.getElementById("save-chars-btn");
+        const mainTitle = document.getElementById("main-title");
+        const panelTitles = document.querySelectorAll(".panel-title");
 
-const lcdContainer = document.getElementById('lcd-container');
-const lcdScreen = document.getElementById('lcd-screen');
-const textInput = document.getElementById('text-input');
-const themeSelector = document.querySelector('.theme-controls');
-const colsInput = document.getElementById('cols-input');
-const rowsInput = document.getElementById('rows-input');
-const updateDisplayBtn = document.getElementById('update-display-btn');
-const downloadBtn = document.getElementById('download-btn');
-const customCharControls = document.getElementById('custom-char-controls');
-const saveCharsBtn = document.getElementById('save-chars-btn');
-const mainTitle = document.getElementById('main-title');
-const panelTitles = document.querySelectorAll('.panel-title');
+        let contexts = [];
+        let customChars = [];
+        const PIXEL_SIZE = 10;
+        const PIXEL_GAP = 1;
+        const CHAR_WIDTH = 5;
+        const CHAR_HEIGHT = 8;
+        const PADDING_X = 1;
+        const PADDING_Y = 1;
+        const SCREEN_GAP = 0.5;
+        const SCREEN_PADDING = 10;
 
+        const themes = {
+          Green: {
+            body: "#e0f0e0",
+            container: "#c0d0c0",
+            screen: "#e8f8e8",
+            off: "#d0e0d0",
+            on: "#204020",
+          },
+          "Green Inv": {
+            body: "#101510",
+            container: "#051005",
+            screen: "#1a2a1a",
+            off: "#204020",
+            on: "#90e090",
+          },
+          Red: {
+            body: "#f0e0e0",
+            container: "#d0c0c0",
+            screen: "#f8e8e8",
+            off: "#e0d0d0",
+            on: "#402020",
+          },
+          "Red Inv": {
+            body: "#151010",
+            container: "#100505",
+            screen: "#2a1a1a",
+            off: "#402020",
+            on: "#e09090",
+          },
+          Blue: {
+            body: "#e0e8f0",
+            container: "#c0c8d0",
+            screen: "#e8eef8",
+            off: "#d0d8e0",
+            on: "#172a45",
+          },
+          "Blue Inv": {
+            body: "#0a192f",
+            container: "#000000",
+            screen: "#0a192f",
+            off: "#172a45",
+            on: "#36a4ff",
+          },
+          Yellow: {
+            body: "#f0f0e0",
+            container: "#d0d0c0",
+            screen: "#f8f8e8",
+            off: "#e0e0d0",
+            on: "#404020",
+          },
+          "Yellow Inv": {
+            body: "#151510",
+            container: "#101005",
+            screen: "#2a2a1a",
+            off: "#404020",
+            on: "#e0e090",
+          },
+          "B&W": {
+            body: "#e0e0e0",
+            container: "#c0c0c0",
+            screen: "#f0f0f0",
+            off: "#d0d0d0",
+            on: "#222222",
+          },
+          "B&W Inv": {
+            body: "#101010",
+            container: "#000000",
+            screen: "#1a1a1a",
+            off: "#333333",
+            on: "#e0e0e0",
+          },
+        };
 
-let contexts = [];
-let customChars = [];
-const PIXEL_SIZE = 10;
-const PIXEL_GAP = 1;
-const CHAR_WIDTH = 5;
-const CHAR_HEIGHT = 8;
-const PADDING_X = 2;
-const PADDING_Y = 2;
-const SCREEN_GAP = 0.5;
-const SCREEN_PADDING = 10;
+        let currentThemeColors = themes["Blue Inv"];
 
-const themes = {'Green':{body:'#e0f0e0',container:'#c0d0c0',screen:'#e8f8e8',off:'#d0e0d0',on:'#204020'},'Green Inv':{body:'#101510',container:'#051005',screen:'#1a2a1a',off:'#204020',on:'#90e090'},'Red':{body:'#f0e0e0',container:'#d0c0c0',screen:'#f8e8e8',off:'#e0d0d0',on:'#402020'},'Red Inv':{body:'#151010',container:'#100505',screen:'#2a1a1a',off:'#402020',on:'#e09090'},'Blue':{body:'#e0e8f0',container:'#c0c8d0',screen:'#e8eef8',off:'#d0d8e0',on:'#172a45'},'Blue Inv':{body:'#0a192f',container:'#000000',screen:'#0a192f',off:'#172a45',on:'#36a4ff'},'Yellow':{body:'#f0f0e0',container:'#d0d0c0',screen:'#f8f8e8',off:'#e0e0d0',on:'#404020'},'Yellow Inv':{body:'#151510',container:'#101005',screen:'#2a2a1a',off:'#404020',on:'#e0e090'},'B&W':{body:'#e0e0e0',container:'#c0c0c0',screen:'#f0f0f0',off:'#d0d0d0',on:'#222222'},'B&W Inv':{body:'#101010',container:'#000000',screen:'#1a1a1a',off:'#333333',on:'#e0e0e0'}};
+        // --- توابع اصلی ---
 
-let currentThemeColors = themes['Blue Inv'];
+        function setTheme(themeName) {
+          currentThemeColors = themes[themeName];
+          document.body.style.backgroundColor = currentThemeColors.body;
+          lcdContainer.style.borderColor = currentThemeColors.container;
+          lcdScreen.style.backgroundColor = currentThemeColors.screen;
+          lcdScreen.style.borderColor = currentThemeColors.container;
 
-// --- توابع اصلی ---
+          // تغییر رنگ عنوان بر اساس تم
+          if (themeName.includes("Inv")) {
+            mainTitle.classList.remove("text-gray-800");
+            mainTitle.classList.add("text-gray-200");
+            panelTitles.forEach((title) => {
+              title.classList.remove("text-gray-800");
+              title.classList.add("text-white");
+            });
+          } else {
+            mainTitle.classList.remove("text-gray-200");
+            mainTitle.classList.add("text-gray-800");
+            panelTitles.forEach((title) => {
+              title.classList.remove("text-white");
+              title.classList.add("text-gray-800");
+            });
+          }
 
-function setTheme(themeName) {
-currentThemeColors = themes[themeName];
-document.body.style.backgroundColor = currentThemeColors.body;
-lcdContainer.style.borderColor = currentThemeColors.container;
-lcdScreen.style.backgroundColor = currentThemeColors.screen;
-lcdScreen.style.borderColor = currentThemeColors.container;
+          renderText();
+        }
 
-// تغییر رنگ عنوان بر اساس تم
-if (themeName.includes('Inv')) {
-mainTitle.classList.remove('text-gray-800');
-mainTitle.classList.add('text-gray-200');
-panelTitles.forEach(title => {
-title.classList.remove('text-gray-800');
-title.classList.add('text-white');
-});
-} else {
-mainTitle.classList.remove('text-gray-200');
-mainTitle.classList.add('text-gray-800');
-panelTitles.forEach(title => {
-title.classList.remove('text-white');
-title.classList.add('text-gray-800');
-});
-}
+        function drawChar(ctx, charPattern) {
+          ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+          const pixelDrawSize = PIXEL_SIZE - PIXEL_GAP;
+          for (let col = 0; col < CHAR_WIDTH; col++) {
+            for (let row = 0; row < CHAR_HEIGHT; row++) {
+              const isPixelOn = charPattern && (charPattern[col] >> row) & 1;
+              ctx.fillStyle = isPixelOn
+                ? currentThemeColors.on
+                : currentThemeColors.off;
+              const x = col * PIXEL_SIZE + PADDING_X * (PIXEL_SIZE / 2);
+              const y = row * PIXEL_SIZE + PADDING_Y * (PIXEL_SIZE / 2);
+              ctx.fillRect(x, y, pixelDrawSize, pixelDrawSize);
+            }
+          }
+        }
 
-renderText();
-}
-function drawChar(ctx, charPattern) {
-ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-const pixelDrawSize = PIXEL_SIZE - PIXEL_GAP;
-for (let col = 0; col < CHAR_WIDTH; col++) {
-for (let row = 0; row < CHAR_HEIGHT; row++) {
-const isPixelOn = charPattern && ((charPattern[col] >> row) & 1);
-ctx.fillStyle = isPixelOn ? currentThemeColors.on : currentThemeColors.off;
-const x = (col * PIXEL_SIZE) + (PADDING_X * (PIXEL_SIZE / 2));
-const y = (row * PIXEL_SIZE) + (PADDING_Y * (PIXEL_SIZE / 2));
-ctx.fillRect(x, y, pixelDrawSize, pixelDrawSize);
-}
-}
-}
+        function renderText() {
+          const rawInputText = textInput.value;
+          const COLS = parseInt(colsInput.value, 10);
+          let lcdBuffer = [];
+          let lcdIndex = 0;
 
-function renderText() {
-const rawInputText = textInput.value;
-const COLS = parseInt(colsInput.value, 10);
-let lcdBuffer = [];
-let lcdIndex = 0;
+          for (let i = 0; i < rawInputText.length; i++) {
+            if (lcdIndex >= contexts.length) break;
+            const char = rawInputText[i];
 
-for (let i = 0; i < rawInputText.length; i++) {
-if (lcdIndex >= contexts.length) break;
-const char = rawInputText[i];
+            if (char === "\\" && i + 1 < rawInputText.length) {
+              const nextChar = rawInputText[i + 1];
+              if (nextChar >= "0" && nextChar <= "7") {
+                lcdBuffer[lcdIndex++] = `\\${nextChar}`;
+                i++; // Skip the digit
+                continue;
+              }
+            }
 
-if (char === '\\' && i + 1 < rawInputText.length) {
-const nextChar = rawInputText[i + 1];
-if (nextChar >= '0' && nextChar <= '7') {
-lcdBuffer[lcdIndex++] = \\${nextChar};
-i++; // Skip the digit
-continue;
-}
-}
+            if (char === "\n") {
+              const currentLinePos = lcdIndex % COLS;
+              const spacesToAdd = COLS - currentLinePos;
+              if (spacesToAdd > 0 && spacesToAdd <= COLS) {
+                for (let s = 0; s < spacesToAdd; s++) {
+                  if (lcdIndex < contexts.length) lcdBuffer[lcdIndex++] = " ";
+                }
+              }
+            } else {
+              lcdBuffer[lcdIndex++] = char;
+            }
+          }
 
-if (char === '\n') {
-const currentLinePos = lcdIndex % COLS;
-const spacesToAdd = COLS - currentLinePos;
-if (spacesToAdd > 0 && spacesToAdd <= COLS) {
-for (let s = 0; s < spacesToAdd; s++) {
-if (lcdIndex < contexts.length) lcdBuffer[lcdIndex++] = ' ';
-}
-}
-} else {
-lcdBuffer[lcdIndex++] = char;
-}
-}
+          contexts.forEach((ctx, i) => {
+            const bufferChar = lcdBuffer[i] || " ";
+            let charPattern = FONT_5x8["?"]; // Fallback
 
-contexts.forEach((ctx, i) => {
-const bufferChar = lcdBuffer[i] || ' ';
-let charPattern = FONT_5x8['?']; // Fallback
+            if (typeof bufferChar === "string" && bufferChar.startsWith("\\")) {
+              const customCharIndex = parseInt(bufferChar[1], 10);
+              if (customChars[customCharIndex]) {
+                charPattern = customChars[customCharIndex];
+              }
+            } else {
+              charPattern = FONT_5x8[bufferChar] || FONT_5x8["?"];
+            }
+            drawChar(ctx, charPattern);
+          });
+        }
 
-if (typeof bufferChar === 'string' && bufferChar.startsWith('\\')) {
-const customCharIndex = parseInt(bufferChar[1], 10);
-if (customChars[customCharIndex]) {
-charPattern = customChars[customCharIndex];
-}
-} else {
-charPattern = FONT_5x8[bufferChar] || FONT_5x8['?'];
-}
-drawChar(ctx, charPattern);
-});
-}
+        function createDisplay() {
+          const COLS = parseInt(colsInput.value, 10);
+          const ROWS = parseInt(rowsInput.value, 10);
+          const TOTAL_CHARS = ROWS * COLS;
 
-function createDisplay() {
-const COLS = parseInt(colsInput.value, 10);
-const ROWS = parseInt(rowsInput.value, 10);
-const TOTAL_CHARS = ROWS * COLS;
+          lcdScreen.innerHTML = "";
+          contexts = [];
 
-lcdScreen.innerHTML = '';
-contexts = [];
+          lcdScreen.style.gridTemplateColumns = `repeat(${COLS}, 1fr)`;
+          lcdScreen.style.gridTemplateRows = `repeat(${ROWS}, 1fr)`;
 
-lcdScreen.style.gridTemplateColumns = repeat(${COLS}, 1fr);
-lcdScreen.style.gridTemplateRows = repeat(${ROWS}, 1fr);
+          const charCanvasWidth =
+            CHAR_WIDTH * PIXEL_SIZE + PADDING_X * 2 * (PIXEL_SIZE / 2);
+          const charCanvasHeight =
+            CHAR_HEIGHT * PIXEL_SIZE + PADDING_Y * 2 * (PIXEL_SIZE / 2);
 
-const charCanvasWidth = (CHAR_WIDTH * PIXEL_SIZE) + (PADDING_X * 2 * (PIXEL_SIZE / 2));
-const charCanvasHeight = (CHAR_HEIGHT * PIXEL_SIZE) + (PADDING_Y * 2 * (PIXEL_SIZE / 2));
+          lcdScreen.style.width = `${
+            COLS * charCanvasWidth +
+            (COLS - 1) * SCREEN_GAP +
+            SCREEN_PADDING * 2
+          }px`;
+          lcdScreen.style.height = `${
+            ROWS * charCanvasHeight +
+            (ROWS - 1) * SCREEN_GAP +
+            SCREEN_PADDING * 2
+          }px`;
 
-lcdScreen.style.width = ${(COLS * charCanvasWidth) + ((COLS - 1) * SCREEN_GAP) + (SCREEN_PADDING * 2)}px;
-lcdScreen.style.height = ${(ROWS * charCanvasHeight) + ((ROWS - 1) * SCREEN_GAP) + (SCREEN_PADDING * 2)}px;
+          for (let i = 0; i < TOTAL_CHARS; i++) {
+            const canvas = document.createElement("canvas");
+            canvas.width = charCanvasWidth;
+            canvas.height = charCanvasHeight;
+            lcdScreen.appendChild(canvas);
+            contexts.push(canvas.getContext("2d"));
+          }
 
-for (let i = 0; i < TOTAL_CHARS; i++) {
-const canvas = document.createElement('canvas');
-canvas.width = charCanvasWidth;
-canvas.height = charCanvasHeight;
-lcdScreen.appendChild(canvas);
-contexts.push(canvas.getContext('2d'));
-}
-textInput.maxLength = TOTAL_CHARS * 2;
-setTheme(document.querySelector('input[name="theme"]:checked').value);
-}
+          textInput.maxLength = TOTAL_CHARS * 2;
+          setTheme(document.querySelector('input[name="theme"]:checked').value);
+        }
 
-function saveCustomChars() {
-customChars = [];
-for (let i = 0; i < 8; i++) {
-const input = document.getElementById(custom-char-${i});
-const rowStrings = input.value.split(',').map(v => v.trim()).filter(v => v);
+        function saveCustomChars() {
+          customChars = [];
+          for (let i = 0; i < 8; i++) {
+            const input = document.getElementById(`custom-char-${i}`);
+            const rowStrings = input.value
+              .split(",")
+              .map((v) => v.trim())
+              .filter((v) => v);
 
-if (rowStrings.length === 8) {
-const rowData = rowStrings.map(val => parseInt(val));
+            if (rowStrings.length === 8) {
+              const rowData = rowStrings.map((val) => parseInt(val));
 
-if (rowData.every(p => !isNaN(p) && p >= 0 && p <= 255)) {
-const colData = [0, 0, 0, 0, 0];
-for (let rowIndex = 0; rowIndex < 8; rowIndex++) {
-for (let colIndex = 0; colIndex < 5; colIndex++) {
-if ((rowData[rowIndex] >> (4 - colIndex)) & 1) {
-colData[colIndex] |= (1 << rowIndex);
-}
-}
-}
-customChars[i] = colData;
-} else {
-customChars[i] = null;
-}
-} else {
-customChars[i] = null;
-}
-}
-renderText(); // Re-render to show changes
-}
+              if (rowData.every((p) => !isNaN(p) && p >= 0 && p <= 255)) {
+                const colData = [0, 0, 0, 0, 0];
+                for (let rowIndex = 0; rowIndex < 8; rowIndex++) {
+                  for (let colIndex = 0; colIndex < 5; colIndex++) {
+                    if ((rowData[rowIndex] >> (4 - colIndex)) & 1) {
+                      colData[colIndex] |= 1 << rowIndex;
+                    }
+                  }
+                }
+                customChars[i] = colData;
+              } else {
+                customChars[i] = null;
+              }
+            } else {
+              customChars[i] = null;
+            }
+          }
+          renderText(); // Re-render to show changes
+        }
 
-function downloadImage() {
-const finalCanvas = document.createElement('canvas');
-const COLS = parseInt(colsInput.value, 10);
-const ROWS = parseInt(rowsInput.value, 10);
-if (contexts.length === 0) return;
+        function downloadImage() {
+          const finalCanvas = document.createElement("canvas");
+          const COLS = parseInt(colsInput.value, 10);
+          const ROWS = parseInt(rowsInput.value, 10);
+          if (contexts.length === 0) return;
 
-const charCanvasWidth = contexts[0].canvas.width;
-const charCanvasHeight = contexts[0].canvas.height;
-const finalWidth = (COLS * charCanvasWidth) + ((COLS - 1) * SCREEN_GAP) + (SCREEN_PADDING * 2);
-const finalHeight = (ROWS * charCanvasHeight) + ((ROWS - 1) * SCREEN_GAP) + (SCREEN_PADDING * 2);
+          const charCanvasWidth = contexts[0].canvas.width;
+          const charCanvasHeight = contexts[0].canvas.height;
+          const finalWidth =
+            COLS * charCanvasWidth +
+            (COLS - 1) * SCREEN_GAP +
+            SCREEN_PADDING * 2;
+          const finalHeight =
+            ROWS * charCanvasHeight +
+            (ROWS - 1) * SCREEN_GAP +
+            SCREEN_PADDING * 2;
 
-finalCanvas.width = finalWidth;
-finalCanvas.height = finalHeight;
-const finalCtx = finalCanvas.getContext('2d');
+          finalCanvas.width = finalWidth;
+          finalCanvas.height = finalHeight;
+          const finalCtx = finalCanvas.getContext("2d");
 
-finalCtx.fillStyle = currentThemeColors.screen;
-finalCtx.fillRect(0, 0, finalWidth, finalHeight);
+          finalCtx.fillStyle = currentThemeColors.screen;
+          finalCtx.fillRect(0, 0, finalWidth, finalHeight);
 
-contexts.forEach((ctx, i) => {
-const col = i % COLS;
-const row = Math.floor(i / COLS);
-const x = SCREEN_PADDING + col * (charCanvasWidth + SCREEN_GAP);
-const y = SCREEN_PADDING + row * (charCanvasHeight + SCREEN_GAP);
-finalCtx.drawImage(ctx.canvas, x, y);
-});
+          contexts.forEach((ctx, i) => {
+            const col = i % COLS;
+            const row = Math.floor(i / COLS);
+            const x = SCREEN_PADDING + col * (charCanvasWidth + SCREEN_GAP);
+            const y = SCREEN_PADDING + row * (charCanvasHeight + SCREEN_GAP);
+            finalCtx.drawImage(ctx.canvas, x, y);
+          });
 
-const link = document.createElement('a');
-link.download = 'lcd-display.png';
-link.href = finalCanvas.toDataURL('image/png');
-link.click();
-}
+          const link = document.createElement("a");
+          link.download = "lcd-display.png";
+          link.href = finalCanvas.toDataURL("image/png");
+          link.click();
+        }
 
-// --- مقداردهی اولیه ---
+        // --- مقداردهی اولیه ---
 
-// ایجاد ورودی‌های کاراکتر سفارشی
-for (let i = 0; i < 8; i++) {
-const div = document.createElement('div');
-div.className = 'flex items-center gap-2';
-const label = document.createElement('label');
-label.htmlFor = custom-char-${i};
-label.className = 'text-sm text-gray-300 font-mono';
-label.textContent = \\${i}:;
-const input = document.createElement('input');
-input.type = 'text';
-input.id = custom-char-${i};
-input.className = 'w-full p-1 rounded bg-gray-700 text-white border border-gray-600 text-xs font-mono';
-input.placeholder = '0x0E,0x11,0x11,0x1F,0x11,0x11,0x11,0x00';
-div.appendChild(label);
-div.appendChild(input);
-customCharControls.appendChild(div);
-}
+        // ایجاد ورودی‌های کاراکتر سفارشی
+        for (let i = 0; i < 8; i++) {
+          const div = document.createElement("div");
+          div.className = "flex items-center gap-2";
+          const label = document.createElement("label");
+          label.htmlFor = `custom-char-${i}`;
+          label.className = "text-sm text-gray-300 font-mono";
+          label.textContent = `\\${i}:`;
+          const input = document.createElement("input");
+          input.type = "text";
+          input.id = `custom-char-${i}`;
+          input.className =
+            "w-full p-1 rounded bg-gray-700 text-white border border-gray-600 text-xs font-mono";
+          input.placeholder = "0x0E,0x11,0x11,0x1F,0x11,0x11,0x11,0x00";
+          div.appendChild(label);
+          div.appendChild(input);
+          customCharControls.appendChild(div);
+        }
 
-// ایجاد دکمه‌های تم
-Object.keys(themes).forEach((themeName, index) => {
- const id = theme-${index};
- const themeColors = themes[themeName];
- const wrapper = document.createElement('div');
- const input = document.createElement('input');
- input.type = 'radio';
- input.id = id;
- input.name = 'theme';
- input.value = themeName;
- input.className = 'hidden';
- if (themeName === 'Blue Inv') input.checked = true;
- input.addEventListener('change', () => setTheme(themeName));
- const label = document.createElement('label');
- label.htmlFor = id;
- label.textContent = themeName;
- label.style.backgroundColor = themeColors.screen;
- label.style.color = themeColors.on;
- wrapper.appendChild(input);
- wrapper.appendChild(label);
- themeSelector.appendChild(wrapper);
- });
+        // ایجاد دکمه‌های تم
+        Object.keys(themes).forEach((themeName, index) => {
+          const id = `theme-${index}`;
+          const themeColors = themes[themeName];
+          const wrapper = document.createElement("div");
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.id = id;
+          input.name = "theme";
+          input.value = themeName;
+          input.className = "hidden";
+          if (themeName === "Blue Inv") input.checked = true;
+          input.addEventListener("change", () => setTheme(themeName));
+          const label = document.createElement("label");
+          label.htmlFor = id;
+          label.textContent = themeName;
+          label.style.backgroundColor = themeColors.screen;
+          label.style.color = themeColors.on;
+          wrapper.appendChild(input);
+          wrapper.appendChild(label);
+          themeSelector.appendChild(wrapper);
+        });
 
- // اتصال رویدادها
- textInput.addEventListener('input', renderText);
- updateDisplayBtn.addEventListener('click', createDisplay);
- downloadBtn.addEventListener('click', downloadImage);
- saveCharsBtn.addEventListener('click', saveCustomChars);
- 
- // ساخت نمایشگر اولیه
- createDisplay();
- });
- </script>
+        // اتصال رویدادها
+        textInput.addEventListener("input", renderText);
+        updateDisplayBtn.addEventListener("click", createDisplay);
+        downloadBtn.addEventListener("click", downloadImage);
+        saveCharsBtn.addEventListener("click", saveCustomChars);
 
-</body>
+        // ساخت نمایشگر اولیه
+        createDisplay();
+      });
+    </script>
+  </body>
 </html>
