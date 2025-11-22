@@ -1,0 +1,77 @@
+{
+  "project": {
+    "id": "satellite-acu-001",
+    "title": "Antenna Control Unit (ACU) Redesign",
+    "short_description": "Redesigned a marine/vehicular satellite ACU with industrial sensors, beacon receiver, and a modular firmware architecture.",
+    "thumbnail": "images/acu_thumbnail.jpg",
+
+    "details": {
+      "overview": "A full redesign of a rack-mount Antenna Control Unit used in mobile satellite tracking systems for ships and trains.",
+      "goals": [
+        "Improve connection stability in harsh sea conditions (up to force 10)",
+        "Replace low-grade sensors with industrial/automotive versions",
+        "Integrate a satellite beacon receiver for precise tracking",
+        "Make firmware structure modular, scalable, and portable"
+      ],
+      "key_features": [
+        "6-schedule PID loop with deterministic timing",
+        "Sensor fusion (gyro + accel) with EKF",
+        "Beacon receiver integrated directly into PCB",
+        "Ethernet, RS485, and USB interface support",
+        "Noise-optimized PCB design with improved EMC/EMI performance"
+      ],
+      "technologies": [
+        "STM32 MCU",
+        "C / C++",
+        "FreeRTOS",
+        "PCB design in Altium",
+        "RS485, SPI, CAN, UART",
+        "EKF sensor fusion",
+        "Industrial IMUs"
+      ],
+      "media": {
+        "images": [
+          "images/acu_board_front.jpg",
+          "images/acu_board_back.jpg",
+          "images/acu_ui_screenshot.png"
+        ],
+        "videos": [
+          "videos/acu_demo.mp4"
+        ]
+      }
+    },
+
+    "timeline": {
+      "start": "2024-03",
+      "end": "2024-09",
+      "milestones": [
+        {
+          "title": "PCB Architecture Redesign",
+          "date": "2024-04",
+          "description": "Created multi-layer board with isolated power, optimized routing, and EMC/EMI improvements."
+        },
+        {
+          "title": "Firmware Refactor",
+          "date": "2024-06",
+          "description": "Modular structure added with drivers, middleware, and communication layers."
+        },
+        {
+          "title": "Sensor Fusion Implementation",
+          "date": "2024-07",
+          "description": "Implemented EKF-based fusion algorithm for stability in high-vibration conditions."
+        },
+        {
+          "title": "System-Level Testing",
+          "date": "2024-09",
+          "description": "Tested full ACU + antenna system in real marine conditions."
+        }
+      ]
+    },
+
+    "links": {
+      "github": "https://github.com/example/acu-project",
+      "demo": "https://example.com/acu-demo",
+      "pdf_report": "docs/acu_design_report.pdf"
+    }
+  }
+}
