@@ -57,49 +57,51 @@
   </div>
 
   <script>
-    fetch('project.json')
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('title').textContent = data.title;
-        document.getElementById('projectTitle').textContent = data.title;
-        document.getElementById('subtitle').textContent = data.subtitle;
-        document.getElementById('hero').src = data.heroImage;
-        document.getElementById('overview').textContent = data.overview;
+fetch('project.json')
+  .then(res => res.json())
+  .then(data => {
+    const project = data.project; // <-- access the nested object
 
-        const features = document.getElementById('features');
-        data.features.forEach(f => {
-          const li = document.createElement('li');
-          li.textContent = f;
-          features.appendChild(li);
-        });
+    document.getElementById('projectTitle').textContent = project.title;
+    document.getElementById('subtitle').textContent = project.short_description;
+    document.querySelector('.hero-image').src = project.thumbnail;
+    document.getElementById('overview').textContent = project.details.overview;
 
-        const tech = document.getElementById('tech');
-        data.techStack.forEach(t => {
-          const li = document.createElement('li');
-          li.textContent = t;
-          tech.appendChild(li);
-        });
+    const features = document.getElementById('features');
+    features.innerHTML = '';
+    project.details.key_features.forEach(f => {
+      const li = document.createElement('li');
+      li.textContent = f;
+      features.appendChild(li);
+    });
 
-        const gallery = document.getElementById('gallery');
-        data.gallery.forEach(img => {
-          const i = document.createElement('img');
-          i.src = img;
-          i.style.width = '100%';
-          i.style.marginBottom = '10px';
-          gallery.appendChild(i);
-        });
+    const tech = document.getElementById('tech');
+    tech.innerHTML = '';
+    project.details.technologies.forEach(t => {
+      const li = document.createElement('li');
+      li.textContent = t;
+      tech.appendChild(li);
+    });
 
-        const links = document.getElementById('links');
-        data.links.forEach(l => {
-          const a = document.createElement('a');
-          a.href = l.url;
-          a.textContent = l.label;
-          a.style.display = 'block';
-          a.style.marginBottom = '6px';
-          links.appendChild(a);
-        });
-      })
-      .catch(err => console.error('JSON load error:', err));
+    const gallery = document.getElementById('gallery');
+    project.details.media.images.forEach(img => {
+      const i = document.createElement('img');
+      i.src = img;
+      i.style.width = '100%';
+      i.style.marginBottom = '10px';
+      gallery.appendChild(i);
+    });
+
+    const links = document.getElementById('links');
+    Object.keys(project.links).forEach(key => {
+      const a = document.createElement('a');
+      a.href = project.links[key];
+      a.textContent = key;
+      a.style.display = 'block';
+      links.appendChild(a);
+    });
+  })
+  .catch(err => console.error('JSON load error:', err));
   </script>
 </body>
 </html>
