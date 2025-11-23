@@ -154,5 +154,73 @@ fetch('project.json')
   })
   .catch(err => console.error('JSON load error:', err));
 </script>
+<!-- Image Modal -->
+<div id="imgModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:9999;">
+  <img id="modalImage" src="" style="max-width:90%; max-height:90%; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.5);" />
+</div>
+
+<script>
+function enableImagePopup(img) {
+  img.style.maxWidth = "500px";
+  img.style.cursor = "pointer";
+  img.onclick = () => {
+    document.getElementById('modalImage').src = img.src;
+    document.getElementById('imgModal').style.display = 'flex';
+  };
+}
+
+document.getElementById('imgModal').onclick = () => {
+  document.getElementById('imgModal').style.display = 'none';
+};
+
+fetch('project.json')
+  .then(res => res.json())
+  .then(data => {
+    const p = data.project;
+
+    const hero = document.getElementById('heroImage');
+    hero.src = p.thumbnail;
+    enableImagePopup(hero);
+
+    const gallery = document.getElementById('gallery');
+    gallery.innerHTML = '';
+    p.details.media.images.forEach(img => {
+      const image = document.createElement('img');
+      image.src = img;
+      image.style.maxWidth = '500px';
+      enableImagePopup(image);
+      gallery.appendChild(image);
+    });
+
+    document.getElementById('projectTitle').textContent = p.title;
+    document.getElementById('subtitle').textContent = p.short_description;
+    document.getElementById('overview').textContent = p.details.overview;
+
+    const features = document.getElementById('features');
+    p.details.key_features.forEach(f => {
+      const li = document.createElement('li');
+      li.textContent = f;
+      features.appendChild(li);
+    });
+
+    const tech = document.getElementById('tech');
+    p.details.technologies.forEach(t => {
+      const li = document.createElement('li');
+      li.textContent = t;
+      tech.appendChild(li);
+    });
+
+    const links = document.getElementById('links');
+    Object.keys(p.links).forEach(key => {
+      const a = document.createElement('a');
+      a.href = p.links[key];
+      a.textContent = key;
+      a.style.display = 'block';
+      a.style.marginBottom = '10px';
+      links.appendChild(a);
+    });
+  })
+  .catch(err => console.error('JSON load error:', err));
+</script>
 </body>
 </html>
