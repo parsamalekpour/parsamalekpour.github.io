@@ -3,224 +3,223 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title id="pageTitle">Project</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <title>Project Template</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
   <style>
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: #f4f6f8;
-      color: #1a1a1a;
+      background: #f6f7fb;
+      color: #222;
+      line-height: 1.6;
     }
     .container {
       max-width: 1100px;
       margin: auto;
-      padding: 30px;
+      padding: 20px;
     }
     header {
       text-align: center;
-      padding: 60px 0 20px;
+      padding: 40px 0;
     }
     header h1 {
-      font-size: 2.8rem;
-      margin: 0;
+      font-size: 2.6rem;
+      margin-bottom: 10px;
       font-weight: 700;
     }
-    header p {
-      font-size: 1.2rem;
-      color: #555;
+
+    /* SIDE BY SIDE HERO + OVERVIEW */
+    .overview-wrapper {
+      display: flex;
+      gap: 35px;
+      margin-top: 40px;
+      align-items: flex-start;
+      flex-wrap: wrap;
     }
-    .hero-image {
+    .overview-text {
+      flex: 1;
+      min-width: 280px;
+    }
+    .hero-box {
+      flex: 1;
+      max-width: 500px;
+    }
+    .hero-box img {
       width: 100%;
       border-radius: 14px;
-      margin: 40px 0;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .hero-box img:hover {
+      transform: scale(1.02);
+    }
+
+    .section {
+      margin-top: 50px;
     }
     h2 {
-      font-size: 1.8rem;
-      margin-top: 50px;
-      border-left: 5px solid #4f46e5;
-      padding-left: 12px;
-    }
-    .card {
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      margin: 20px 0;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      font-size: 1.7rem;
+      margin-bottom: 15px;
     }
     ul {
-      padding: 0;
       list-style: none;
+      padding: 0;
     }
     li {
-      background: #fafafa;
+      background: #fff;
       padding: 12px 16px;
-      margin: 10px 0;
+      margin-bottom: 8px;
       border-radius: 8px;
-      border: 1px solid #e3e3e3;
+      border: 1px solid #ddd;
     }
-    .gallery img {
-      width: 100%;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+
+    /* IMAGE POPUP */
+    #imgPopup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
     }
+    #imgPopup img {
+      max-width: 95%;
+      max-height: 95%;
+      border-radius: 10px;
+    }
+
     footer {
       text-align: center;
       margin-top: 60px;
-      padding: 20px;
+      font-size: 0.9rem;
       color: #666;
-      font-size: 0.95rem;
+      padding-bottom: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1 id="projectTitle">Loading...</h1>
-      <p id="subtitle">Please wait</p>
-    </header>
 
-    <img id="heroImage" class="hero-image" src="" alt="Project image" />
+<div class="container">
 
-    <h2>Overview</h2>
-    <div class="card">
-      <p id="overview">Loading...</p>
+  <header>
+    <h1 id="title">Project Title</h1>
+    <p id="subtitle">Short description of the project</p>
+  </header>
+
+  <!-- SIDE BY SIDE HERO + OVERVIEW -->
+  <div class="overview-wrapper">
+
+    <div class="hero-box">
+      <img id="heroImage" src="" alt="Project image" />
     </div>
 
-    <h2>Key Features</h2>
-    <div class="card">
-      <ul id="features"></ul>
+    <div class="overview-text">
+      <h2>Overview</h2>
+      <p id="overview">Loading overview...</p>
     </div>
 
-    <h2>Tech Stack</h2>
-    <div class="card">
-      <ul id="tech"></ul>
-    </div>
-
-    <h2>Gallery</h2>
-    <div class="gallery card" id="gallery"></div>
-
-    <h2>Download / Links</h2>
-    <div class="card" id="links"></div>
-
-    <footer>
-      © Your Name — Project Showcase
-    </footer>
   </div>
 
-<script>
-fetch('project.json')
-  .then(res => res.json())
-  .then(data => {
-    const p = data.project;
+  <!-- FEATURES -->
+  <section class="section">
+    <h2>Key Features</h2>
+    <ul id="features"></ul>
+  </section>
 
-    document.getElementById('projectTitle').textContent = p.title;
-    document.getElementById('subtitle').textContent = p.short_description;
-    document.getElementById('heroImage').src = p.thumbnail;
-    document.getElementById('overview').textContent = p.details.overview;
+  <!-- TECH STACK -->
+  <section class="section">
+    <h2>Tech Stack</h2>
+    <ul id="tech"></ul>
+  </section>
 
-    const features = document.getElementById('features');
-    p.details.key_features.forEach(f => {
-      const li = document.createElement('li');
-      li.textContent = f;
-      features.appendChild(li);
-    });
+  <!-- GALLERY -->
+  <section class="section">
+    <h2>Gallery</h2>
+    <div id="gallery"></div>
+  </section>
 
-    const tech = document.getElementById('tech');
-    p.details.technologies.forEach(t => {
-      const li = document.createElement('li');
-      li.textContent = t;
-      tech.appendChild(li);
-    });
+  <!-- LINKS -->
+  <section class="section">
+    <h2>Download / Links</h2>
+    <ul id="links"></ul>
+  </section>
 
-    const gallery = document.getElementById('gallery');
-    p.details.media.images.forEach(img => {
-      const image = document.createElement('img');
-      image.src = img;
-      gallery.appendChild(image);
-    });
+  <footer>
+    © Your Name — Project Showcase Page
+  </footer>
+</div>
 
-    const links = document.getElementById('links');
-    Object.keys(p.links).forEach(key => {
-      const a = document.createElement('a');
-      a.href = p.links[key];
-      a.textContent = key;
-      a.style.display = 'block';
-      a.style.marginBottom = '10px';
-      links.appendChild(a);
-    });
-  })
-  .catch(err => console.error('JSON load error:', err));
-</script>
-<!-- Image Modal -->
-<div id="imgModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:9999;">
-  <img id="modalImage" src="" style="max-width:90%; max-height:90%; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.5);" />
+<!-- POPUP OVERLAY -->
+<div id="imgPopup" onclick="this.style.display='none'">
+  <img id="popupImage" src="" />
 </div>
 
 <script>
-function enableImagePopup(img) {
-  img.style.maxWidth = "500px";
-  img.style.cursor = "pointer";
-  img.onclick = () => {
-    document.getElementById('modalImage').src = img.src;
-    document.getElementById('imgModal').style.display = 'flex';
-  };
-}
+  const jsonFile = "project.json"; // EDIT JSON FILE NAME HERE
 
-document.getElementById('imgModal').onclick = () => {
-  document.getElementById('imgModal').style.display = 'none';
-};
+  fetch(jsonFile)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('title').textContent = data.title;
+      document.getElementById('subtitle').textContent = data.subtitle;
+      document.getElementById('overview').textContent = data.overview;
 
-fetch('project.json')
-  .then(res => res.json())
-  .then(data => {
-    const p = data.project;
+      // HERO
+      if (data.heroImage) {
+        const hero = document.getElementById('heroImage');
+        hero.src = data.heroImage;
+        hero.onclick = () => openPopup(data.heroImage);
+      }
 
-    const hero = document.getElementById('heroImage');
-    hero.src = p.thumbnail;
-    enableImagePopup(hero);
+      // FEATURES
+      const features = document.getElementById('features');
+      data.features.forEach(f => {
+        const li = document.createElement('li');
+        li.textContent = f;
+        features.appendChild(li);
+      });
 
-    const gallery = document.getElementById('gallery');
-    gallery.innerHTML = '';
-    p.details.media.images.forEach(img => {
-      const image = document.createElement('img');
-      image.src = img;
-      image.style.maxWidth = '500px';
-      enableImagePopup(image);
-      gallery.appendChild(image);
-    });
+      // TECH STACK
+      const tech = document.getElementById('tech');
+      data.tech.forEach(t => {
+        const li = document.createElement('li');
+        li.textContent = t;
+        tech.appendChild(li);
+      });
 
-    document.getElementById('projectTitle').textContent = p.title;
-    document.getElementById('subtitle').textContent = p.short_description;
-    document.getElementById('overview').textContent = p.details.overview;
+      // GALLERY
+      const gallery = document.getElementById('gallery');
+      data.gallery.forEach(img => {
+        const el = document.createElement('img');
+        el.src = img;
+        el.style.width = '200px';
+        el.style.margin = '10px';
+        el.style.borderRadius = '10px';
+        el.style.cursor = 'pointer';
+        el.onclick = () => openPopup(img);
+        gallery.appendChild(el);
+      });
 
-    const features = document.getElementById('features');
-    p.details.key_features.forEach(f => {
-      const li = document.createElement('li');
-      li.textContent = f;
-      features.appendChild(li);
-    });
+      // LINKS
+      const links = document.getElementById('links');
+      data.links.forEach(a => {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="${a.url}" target="_blank">${a.label}</a>`;
+        links.appendChild(li);
+      });
+    })
+    .catch(err => console.error("JSON load error:", err));
 
-    const tech = document.getElementById('tech');
-    p.details.technologies.forEach(t => {
-      const li = document.createElement('li');
-      li.textContent = t;
-      tech.appendChild(li);
-    });
-
-    const links = document.getElementById('links');
-    Object.keys(p.links).forEach(key => {
-      const a = document.createElement('a');
-      a.href = p.links[key];
-      a.textContent = key;
-      a.style.display = 'block';
-      a.style.marginBottom = '10px';
-      links.appendChild(a);
-    });
-  })
-  .catch(err => console.error('JSON load error:', err));
+  function openPopup(src) {
+    const popup = document.getElementById('imgPopup');
+    const popupImg = document.getElementById('popupImage');
+    popupImg.src = src;
+    popup.style.display = 'flex';
+  }
 </script>
+
 </body>
 </html>
