@@ -3,7 +3,7 @@
     "id": "satellite-acu-001",
     "title": "Antenna Control Unit (ACU) Redesign",
     "short_description": "Redesigned a marine/vehicular satellite ACU with industrial sensors, beacon receiver, and a modular firmware architecture.",
-    "thumbnail": "images/acu_thumbnail.jpg",
+    "thumbnail": "images/price_1.jpg",
 
     "details": {
       "overview": "A full redesign of a rack-mount Antenna Control Unit used in mobile satellite tracking systems for ships and trains.",
@@ -31,9 +31,8 @@
       ],
       "media": {
         "images": [
-          "images/acu_board_front.jpg",
-          "images/acu_board_back.jpg",
-          "images/acu_ui_screenshot.png"
+          "images/price_2.jpg",
+          "images/price_3.jpg",
         ],
         "videos": [
           "videos/acu_demo.mp4"
