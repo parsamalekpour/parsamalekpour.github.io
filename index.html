@@ -3,105 +3,156 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title id="title">Loading...</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+  <title id="pageTitle">Project</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <style>
-    body { margin: 0; font-family: 'Inter', sans-serif; background: #f9f9f9; color: #222; line-height: 1.6; }
-    .container { max-width: 900px; margin: auto; padding: 20px; }
-    header { text-align: center; padding: 40px 0; }
-    header h1 { font-size: 2.4rem; margin-bottom: 10px; }
-    .hero-image { width: 100%; border-radius: 8px; margin: 25px 0; }
-    h2 { margin-top: 50px; font-size: 1.5rem; }
-    ul { list-style: none; padding: 0; }
-    li { background: #fff; padding: 10px 15px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #ddd; }
-    footer { text-align: center; margin-top: 60px; font-size: 0.9rem; color: #666; padding-bottom: 20px; }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #f4f6f8;
+      color: #1a1a1a;
+    }
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 30px;
+    }
+    header {
+      text-align: center;
+      padding: 60px 0 20px;
+    }
+    header h1 {
+      font-size: 2.8rem;
+      margin: 0;
+      font-weight: 700;
+    }
+    header p {
+      font-size: 1.2rem;
+      color: #555;
+    }
+    .hero-image {
+      width: 100%;
+      border-radius: 14px;
+      margin: 40px 0;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+    h2 {
+      font-size: 1.8rem;
+      margin-top: 50px;
+      border-left: 5px solid #4f46e5;
+      padding-left: 12px;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    }
+    ul {
+      padding: 0;
+      list-style: none;
+    }
+    li {
+      background: #fafafa;
+      padding: 12px 16px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #e3e3e3;
+    }
+    .gallery img {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    }
+    footer {
+      text-align: center;
+      margin-top: 60px;
+      padding: 20px;
+      color: #666;
+      font-size: 0.95rem;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1 id="projectTitle"></h1>
-      <p id="subtitle"></p>
+      <h1 id="projectTitle">Loading...</h1>
+      <p id="subtitle">Please wait</p>
     </header>
 
-    <img id="hero" src="" class="hero-image" alt="Project Image" />
+    <img id="heroImage" class="hero-image" src="" alt="Project image" />
 
-    <section class="section">
-      <h2>Overview</h2>
-      <p id="overview"></p>
-    </section>
+    <h2>Overview</h2>
+    <div class="card">
+      <p id="overview">Loading...</p>
+    </div>
 
-    <section class="section">
-      <h2>Key Features</h2>
+    <h2>Key Features</h2>
+    <div class="card">
       <ul id="features"></ul>
-    </section>
+    </div>
 
-    <section class="section">
-      <h2>Tech Stack</h2>
+    <h2>Tech Stack</h2>
+    <div class="card">
       <ul id="tech"></ul>
-    </section>
+    </div>
 
-    <section class="section">
-      <h2>Gallery</h2>
-      <div id="gallery"></div>
-    </section>
+    <h2>Gallery</h2>
+    <div class="gallery card" id="gallery"></div>
 
-    <section class="section">
-      <h2>Download / Links</h2>
-      <div id="links"></div>
-    </section>
+    <h2>Download / Links</h2>
+    <div class="card" id="links"></div>
 
     <footer>
-      © Your Name — Project Showcase Page
+      © Your Name — Project Showcase
     </footer>
   </div>
 
-  <script>
+<script>
 fetch('project.json')
   .then(res => res.json())
   .then(data => {
-    const project = data.project; // <-- access the nested object
+    const p = data.project;
 
-    document.getElementById('projectTitle').textContent = project.title;
-    document.getElementById('subtitle').textContent = project.short_description;
-    document.querySelector('.hero-image').src = project.thumbnail;
-    document.getElementById('overview').textContent = project.details.overview;
+    document.getElementById('projectTitle').textContent = p.title;
+    document.getElementById('subtitle').textContent = p.short_description;
+    document.getElementById('heroImage').src = p.thumbnail;
+    document.getElementById('overview').textContent = p.details.overview;
 
     const features = document.getElementById('features');
-    features.innerHTML = '';
-    project.details.key_features.forEach(f => {
+    p.details.key_features.forEach(f => {
       const li = document.createElement('li');
       li.textContent = f;
       features.appendChild(li);
     });
 
     const tech = document.getElementById('tech');
-    tech.innerHTML = '';
-    project.details.technologies.forEach(t => {
+    p.details.technologies.forEach(t => {
       const li = document.createElement('li');
       li.textContent = t;
       tech.appendChild(li);
     });
 
     const gallery = document.getElementById('gallery');
-    project.details.media.images.forEach(img => {
-      const i = document.createElement('img');
-      i.src = img;
-      i.style.width = '100%';
-      i.style.marginBottom = '10px';
-      gallery.appendChild(i);
+    p.details.media.images.forEach(img => {
+      const image = document.createElement('img');
+      image.src = img;
+      gallery.appendChild(image);
     });
 
     const links = document.getElementById('links');
-    Object.keys(project.links).forEach(key => {
+    Object.keys(p.links).forEach(key => {
       const a = document.createElement('a');
-      a.href = project.links[key];
+      a.href = p.links[key];
       a.textContent = key;
       a.style.display = 'block';
+      a.style.marginBottom = '10px';
       links.appendChild(a);
     });
   })
   .catch(err => console.error('JSON load error:', err));
-  </script>
+</script>
 </body>
 </html>
