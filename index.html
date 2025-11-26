@@ -30,11 +30,30 @@
       font-size: 1.2rem;
       color: #555;
     }
-    .hero-image {
-      width: 100%;
-      border-radius: 14px;
+    .hero-section {
+      display: flex;
+      gap: 40px;
       margin: 40px 0;
+      align-items: flex-start;
+    }
+    .hero-image {
+      flex: 1;
+      border-radius: 14px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      max-width: 100%;
+    }
+    .overview-card {
+      flex: 1;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    }
+    .overview-card h2 {
+      margin-top: 0;
+      font-size: 1.8rem;
+      border-left: 5px solid #4f46e5;
+      padding-left: 12px;
     }
     h2 {
       font-size: 1.8rem;
@@ -73,6 +92,18 @@
       color: #666;
       font-size: 0.95rem;
     }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .hero-section {
+        flex-direction: column;
+        gap: 20px;
+      }
+      .hero-image, .overview-card {
+        flex: none;
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
@@ -82,11 +113,12 @@
       <p id="subtitle">Please wait</p>
     </header>
 
-    <img id="heroImage" class="hero-image" src="" alt="Project image" />
-
-    <h2>Overview</h2>
-    <div class="card">
-      <p id="overview">Loading...</p>
+    <div class="hero-section">
+      <img id="heroImage" class="hero-image" src="" alt="Project image" />
+      <div class="overview-card">
+        <h2>Overview</h2>
+        <p id="overview">Loading...</p>
+      </div>
     </div>
 
     <h2>Key Features</h2>
@@ -110,50 +142,6 @@
     </footer>
   </div>
 
-<script>
-fetch('project.json')
-  .then(res => res.json())
-  .then(data => {
-    const p = data.project;
-
-    document.getElementById('projectTitle').textContent = p.title;
-    document.getElementById('subtitle').textContent = p.short_description;
-    document.getElementById('heroImage').src = p.thumbnail;
-    document.getElementById('overview').textContent = p.details.overview;
-
-    const features = document.getElementById('features');
-    p.details.key_features.forEach(f => {
-      const li = document.createElement('li');
-      li.textContent = f;
-      features.appendChild(li);
-    });
-
-    const tech = document.getElementById('tech');
-    p.details.technologies.forEach(t => {
-      const li = document.createElement('li');
-      li.textContent = t;
-      tech.appendChild(li);
-    });
-
-    const gallery = document.getElementById('gallery');
-    p.details.media.images.forEach(img => {
-      const image = document.createElement('img');
-      image.src = img;
-      gallery.appendChild(image);
-    });
-
-    const links = document.getElementById('links');
-    Object.keys(p.links).forEach(key => {
-      const a = document.createElement('a');
-      a.href = p.links[key];
-      a.textContent = key;
-      a.style.display = 'block';
-      a.style.marginBottom = '10px';
-      links.appendChild(a);
-    });
-  })
-  .catch(err => console.error('JSON load error:', err));
-</script>
 <!-- Image Modal -->
 <div id="imgModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:9999;">
   <img id="modalImage" src="" style="max-width:90%; max-height:90%; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.5);" />
@@ -161,7 +149,6 @@ fetch('project.json')
 
 <script>
 function enableImagePopup(img) {
-  img.style.maxWidth = "500px";
   img.style.cursor = "pointer";
   img.onclick = () => {
     document.getElementById('modalImage').src = img.src;
