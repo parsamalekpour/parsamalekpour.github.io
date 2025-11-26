@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title id="pageTitle">Project</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
       margin: 0;
@@ -97,6 +98,33 @@
     .gallery img:hover {
       transform: scale(1.05);
     }
+    .link-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      margin: 10px 0;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+      text-decoration: none;
+      color: #1a1a1a;
+      transition: all 0.2s ease;
+    }
+    .link-item:hover {
+      background: #e9ecef;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .link-icon {
+      width: 20px;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+    .link-text {
+      flex: 1;
+      font-weight: 500;
+    }
     footer {
       text-align: center;
       margin-top: 60px;
@@ -179,6 +207,38 @@ function enableImagePopup(img) {
   };
 }
 
+function getIconForLink(key) {
+  const iconMap = {
+    github: 'fab fa-github',
+    demo: 'fas fa-external-link-alt',
+    pdf_report: 'fas fa-file-pdf',
+    documentation: 'fas fa-book',
+    website: 'fas fa-globe',
+    video: 'fas fa-play-circle',
+    download: 'fas fa-download',
+    linkedin: 'fab fa-linkedin',
+    twitter: 'fab fa-twitter',
+    youtube: 'fab fa-youtube'
+  };
+  return iconMap[key] || 'fas fa-link';
+}
+
+function getDisplayName(key) {
+  const nameMap = {
+    github: 'GitHub Repository',
+    demo: 'Live Demo',
+    pdf_report: 'PDF Report',
+    documentation: 'Documentation',
+    website: 'Project Website',
+    video: 'Video Demo',
+    download: 'Download',
+    linkedin: 'LinkedIn',
+    twitter: 'Twitter',
+    youtube: 'YouTube'
+  };
+  return nameMap[key] || key.charAt(0).toUpperCase() + key.slice(1);
+}
+
 document.getElementById('imgModal').onclick = () => {
   document.getElementById('imgModal').style.display = 'none';
 };
@@ -220,13 +280,25 @@ fetch('project.json')
     });
 
     const links = document.getElementById('links');
+    links.innerHTML = '';
     Object.keys(p.links).forEach(key => {
-      const a = document.createElement('a');
-      a.href = p.links[key];
-      a.textContent = key;
-      a.style.display = 'block';
-      a.style.marginBottom = '10px';
-      links.appendChild(a);
+      const linkItem = document.createElement('a');
+      linkItem.href = p.links[key];
+      linkItem.className = 'link-item';
+      linkItem.target = '_blank';
+      linkItem.rel = 'noopener noreferrer';
+      
+      const icon = document.createElement('div');
+      icon.className = 'link-icon';
+      icon.innerHTML = `<i class="${getIconForLink(key)}"></i>`;
+      
+      const text = document.createElement('div');
+      text.className = 'link-text';
+      text.textContent = getDisplayName(key);
+      
+      linkItem.appendChild(icon);
+      linkItem.appendChild(text);
+      links.appendChild(linkItem);
     });
   })
   .catch(err => console.error('JSON load error:', err));
