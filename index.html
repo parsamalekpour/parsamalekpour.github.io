@@ -37,10 +37,12 @@
       align-items: flex-start;
     }
     .hero-image {
-      flex: 1;
+      flex: 0 0 45%;
+      max-width: 45%;
       border-radius: 14px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-      max-width: 100%;
+      width: 100%;
+      height: auto;
     }
     .overview-card {
       flex: 1;
@@ -79,11 +81,21 @@
       border-radius: 8px;
       border: 1px solid #e3e3e3;
     }
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
     .gallery img {
-      width: 100%;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      width: 150px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
+    .gallery img:hover {
+      transform: scale(1.05);
     }
     footer {
       text-align: center;
@@ -99,9 +111,20 @@
         flex-direction: column;
         gap: 20px;
       }
-      .hero-image, .overview-card {
+      .hero-image {
         flex: none;
-        width: 100%;
+        max-width: 100%;
+      }
+      .gallery img {
+        width: 120px;
+        height: 80px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .gallery img {
+        width: 100px;
+        height: 70px;
       }
     }
   </style>
@@ -174,7 +197,6 @@ fetch('project.json')
     p.details.media.images.forEach(img => {
       const image = document.createElement('img');
       image.src = img;
-      image.style.maxWidth = '500px';
       enableImagePopup(image);
       gallery.appendChild(image);
     });
