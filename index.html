@@ -3,305 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title id="pageTitle">Project</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <title id="pageTitle">Project Showcase</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: #f4f6f8;
-      color: #1a1a1a;
-    }
-    .container {
-      max-width: 1100px;
-      margin: auto;
-      padding: 30px;
-    }
-    header {
-      text-align: center;
-      padding: 60px 0 20px;
-    }
-    header h1 {
-      font-size: 2.8rem;
-      margin: 0;
-      font-weight: 700;
-    }
-    header p {
-      font-size: 1.2rem;
-      color: #555;
-    }
-    .hero-section {
-      display: flex;
-      gap: 40px;
-      margin: 40px 0;
-      align-items: flex-start;
-    }
-    .hero-image {
-      flex: 0 0 45%;
-      max-width: 45%;
-      border-radius: 14px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-      width: 100%;
-      height: auto;
-    }
-    .overview-card {
-      flex: 1;
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-    }
-    .overview-card h2 {
-      margin-top: 0;
-      font-size: 1.8rem;
-      border-left: 5px solid #4f46e5;
-      padding-left: 12px;
-    }
-    h2 {
-      font-size: 1.8rem;
-      margin-top: 50px;
-      border-left: 5px solid #4f46e5;
-      padding-left: 12px;
-    }
-    .card {
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      margin: 20px 0;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-    }
-    ul {
-      padding: 0;
-      list-style: none;
-    }
-    li {
-      background: #fafafa;
-      padding: 12px 16px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: 1px solid #e3e3e3;
-    }
-    .gallery {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
-    .gallery img {
-      width: 150px;
-      height: 100px;
-      object-fit: cover;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease;
-    }
-    .gallery img:hover {
-      transform: scale(1.05);
-    }
-    .link-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      margin: 10px 0;
-      background: #f8f9fa;
-      border-radius: 8px;
-      border: 1px solid #e9ecef;
-      text-decoration: none;
-      color: #1a1a1a;
-      transition: all 0.2s ease;
-    }
-    .link-item:hover {
-      background: #e9ecef;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    .link-icon {
-      width: 20px;
-      text-align: center;
-      font-size: 1.2rem;
-    }
-    .link-text {
-      flex: 1;
-      font-weight: 500;
-    }
-    footer {
-      text-align: center;
-      margin-top: 60px;
-      padding: 20px;
-      color: #666;
-      font-size: 0.95rem;
-    }
-
-    /* Responsive design */
-    @media (max-width: 768px) {
-      .hero-section {
-        flex-direction: column;
-        gap: 20px;
-      }
-      .hero-image {
-        flex: none;
-        max-width: 100%;
-      }
-      .gallery img {
-        width: 120px;
-        height: 80px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .gallery img {
-        width: 100px;
-        height: 70px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1 id="projectTitle">Loading...</h1>
-      <p id="subtitle">Please wait</p>
+    <!-- Header Section -->
+    <header class="header">
+      <div class="header-content">
+        <h1 id="projectTitle">Loading...</h1>
+        <p id="subtitle" class="subtitle">Please wait</p>
+        <div class="project-meta" id="projectMeta"></div>
+      </div>
     </header>
 
-    <div class="hero-section">
-      <img id="heroImage" class="hero-image" src="" alt="Project image" />
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-image-container">
+        <img id="heroImage" class="hero-image" src="" alt="Project image" />
+      </div>
       <div class="overview-card">
-        <h2>Overview</h2>
+        <h2><i class="fas fa-info-circle"></i> Overview</h2>
         <p id="overview">Loading...</p>
+        <div class="goals-section">
+          <h3>Project Goals</h3>
+          <ul id="goals"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content Grid -->
+    <div class="content-grid">
+      <!-- Left Column -->
+      <div class="left-column">
+        <section class="card">
+          <h2><i class="fas fa-star"></i> Key Features</h2>
+          <ul id="features"></ul>
+        </section>
+
+        <section class="card">
+          <h2><i class="fas fa-history"></i> Timeline</h2>
+          <div class="timeline" id="timeline"></div>
+        </section>
+      </div>
+
+      <!-- Right Column -->
+      <div class="right-column">
+        <section class="card">
+          <h2><i class="fas fa-code"></i> Tech Stack</h2>
+          <div class="tech-grid" id="tech"></div>
+        </section>
+
+        <section class="card">
+          <h2><i class="fas fa-download"></i> Links & Resources</h2>
+          <div class="links-grid" id="links"></div>
+        </section>
       </div>
     </div>
 
-    <h2>Key Features</h2>
-    <div class="card">
-      <ul id="features"></ul>
-    </div>
+    <!-- Gallery Section -->
+    <section class="card">
+      <h2><i class="fas fa-images"></i> Gallery</h2>
+      <div class="gallery" id="gallery"></div>
+    </section>
 
-    <h2>Tech Stack</h2>
-    <div class="card">
-      <ul id="tech"></ul>
-    </div>
-
-    <h2>Gallery</h2>
-    <div class="gallery card" id="gallery"></div>
-
-    <h2>Download / Links</h2>
-    <div class="card" id="links"></div>
-
-    <footer>
-      © Your Name — Project Showcase
+    <!-- Footer -->
+    <footer class="footer">
+      <p>© Your Name — Project Showcase</p>
     </footer>
   </div>
 
-<!-- Image Modal -->
-<div id="imgModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:9999;">
-  <img id="modalImage" src="" style="max-width:90%; max-height:90%; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.5);" />
-</div>
+  <!-- Image Modal -->
+  <div id="imgModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <img id="modalImage" src="" alt="Enlarged view" />
+    </div>
+  </div>
 
-<script>
-function enableImagePopup(img) {
-  img.style.cursor = "pointer";
-  img.onclick = () => {
-    document.getElementById('modalImage').src = img.src;
-    document.getElementById('imgModal').style.display = 'flex';
-  };
-}
-
-function getIconForLink(key) {
-  const iconMap = {
-    github: 'fab fa-github',
-    demo: 'fas fa-external-link-alt',
-    pdf_report: 'fas fa-file-pdf',
-    documentation: 'fas fa-book',
-    website: 'fas fa-globe',
-    video: 'fas fa-play-circle',
-    download: 'fas fa-download',
-    linkedin: 'fab fa-linkedin',
-    twitter: 'fab fa-twitter',
-    youtube: 'fab fa-youtube'
-  };
-  return iconMap[key] || 'fas fa-link';
-}
-
-function getDisplayName(key) {
-  const nameMap = {
-    github: 'GitHub Repository',
-    demo: 'Live Demo',
-    pdf_report: 'PDF Report',
-    documentation: 'Documentation',
-    website: 'Project Website',
-    video: 'Video Demo',
-    download: 'Download',
-    linkedin: 'LinkedIn',
-    twitter: 'Twitter',
-    youtube: 'YouTube'
-  };
-  return nameMap[key] || key.charAt(0).toUpperCase() + key.slice(1);
-}
-
-document.getElementById('imgModal').onclick = () => {
-  document.getElementById('imgModal').style.display = 'none';
-};
-
-fetch('project.json')
-  .then(res => res.json())
-  .then(data => {
-    const p = data.project;
-
-    const hero = document.getElementById('heroImage');
-    hero.src = p.thumbnail;
-    enableImagePopup(hero);
-
-    const gallery = document.getElementById('gallery');
-    gallery.innerHTML = '';
-    p.details.media.images.forEach(img => {
-      const image = document.createElement('img');
-      image.src = img;
-      enableImagePopup(image);
-      gallery.appendChild(image);
-    });
-
-    document.getElementById('projectTitle').textContent = p.title;
-    document.getElementById('subtitle').textContent = p.short_description;
-    document.getElementById('overview').textContent = p.details.overview;
-
-    const features = document.getElementById('features');
-    p.details.key_features.forEach(f => {
-      const li = document.createElement('li');
-      li.textContent = f;
-      features.appendChild(li);
-    });
-
-    const tech = document.getElementById('tech');
-    p.details.technologies.forEach(t => {
-      const li = document.createElement('li');
-      li.textContent = t;
-      tech.appendChild(li);
-    });
-
-    const links = document.getElementById('links');
-    links.innerHTML = '';
-    Object.keys(p.links).forEach(key => {
-      const linkItem = document.createElement('a');
-      linkItem.href = p.links[key];
-      linkItem.className = 'link-item';
-      linkItem.target = '_blank';
-      linkItem.rel = 'noopener noreferrer';
-      
-      const icon = document.createElement('div');
-      icon.className = 'link-icon';
-      icon.innerHTML = `<i class="${getIconForLink(key)}"></i>`;
-      
-      const text = document.createElement('div');
-      text.className = 'link-text';
-      text.textContent = getDisplayName(key);
-      
-      linkItem.appendChild(icon);
-      linkItem.appendChild(text);
-      links.appendChild(linkItem);
-    });
-  })
-  .catch(err => console.error('JSON load error:', err));
-</script>
+  <script src="script.js"></script>
 </body>
 </html>
