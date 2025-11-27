@@ -76,9 +76,10 @@ function renderProjectMeta(project) {
     elements.projectMeta.innerHTML = metaHtml;
 }
 
+// Updated renderGoals function with icons
 function renderGoals(goals) {
     elements.goals.innerHTML = goals.map(goal => 
-        `<li>${goal}</li>`
+        `<li><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 8px;"></i>${goal}</li>`
     ).join('');
 }
 
