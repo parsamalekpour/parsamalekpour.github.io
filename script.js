@@ -3,7 +3,6 @@ const elements = {
     projectTitle: document.getElementById('projectTitle'),
     subtitle: document.getElementById('subtitle'),
     projectMeta: document.getElementById('projectMeta'),
-    projectHighlights: document.getElementById('projectHighlights'),
     heroImage: document.getElementById('heroImage'),
     overview: document.getElementById('overview'),
     goals: document.getElementById('goals'),
@@ -14,17 +13,14 @@ const elements = {
     tech: document.getElementById('tech'),
     resultsGrid: document.getElementById('resultsGrid'),
     timeline: document.getElementById('timeline'),
-    deepDive: document.getElementById('deepDive'),
-    lessonsLearned: document.getElementById('lessonsLearned'),
     links: document.getElementById('links'),
     gallery: document.getElementById('gallery'),
-    relatedProjects: document.getElementById('relatedProjects'),
     modal: document.getElementById('imgModal'),
     modalImage: document.getElementById('modalImage'),
     closeModal: document.querySelector('.close')
 };
 
-// Sample data for new sections (you'll want to move this to project.json)
+// Sample data for remaining sections
 const projectEnhancements = {
     challenge: "The original antenna control unit struggled with connection stability in harsh marine conditions (up to force 10 winds), used low-grade sensors that failed in high-vibration environments, and had monolithic firmware that was difficult to maintain and scale.",
     solution: "We completely redesigned the system with industrial-grade sensors, implemented a 6-schedule PID loop with deterministic timing, added EKF-based sensor fusion for stability, and created a modular firmware architecture using FreeRTOS for better maintainability and scalability.",
@@ -55,38 +51,6 @@ const projectEnhancements = {
         { value: "60%", label: "Performance Improvement" },
         { value: "Force 10", label: "Weather Resistance" },
         { value: "-40%", label: "Power Consumption" }
-    ],
-    deepDive: [
-        {
-            title: "Sensor Fusion Algorithm",
-            content: "Implemented an Extended Kalman Filter (EKF) that combines gyroscope and accelerometer data to maintain accurate orientation tracking even in high-vibration marine environments. The algorithm runs at 1kHz with deterministic timing."
-        },
-        {
-            title: "PCB Layout Optimization",
-            content: "Used a 4-layer board design with dedicated power and ground planes. Implemented star routing for power distribution and guard rings around sensitive analog components to minimize noise interference."
-        },
-        {
-            title: "Real-time OS Architecture",
-            content: "Built on FreeRTOS with separate tasks for sensor reading (1kHz), control loop (500Hz), communication (100Hz), and system monitoring (10Hz). Used mutexes and queues for inter-task communication."
-        }
-    ],
-    lessons: [
-        "Proper PCB grounding is critical in high-vibration environments - star grounding proved most effective",
-        "Modular firmware architecture significantly reduces debugging time and enables feature additions",
-        "Industrial-grade components, while more expensive, dramatically improve reliability in harsh conditions",
-        "Deterministic timing in control loops is essential for stable satellite tracking"
-    ],
-    relatedProjects: [
-        {
-            title: "Satellite Communication System",
-            image: "images/related-satcom.jpg",
-            link: "/projects/satellite-comm"
-        },
-        {
-            title: "Marine Navigation Computer",
-            image: "images/related-nav.jpg", 
-            link: "/projects/navigation-computer"
-        }
     ]
 };
 
@@ -154,32 +118,6 @@ function renderProjectMeta(project) {
     elements.projectMeta.innerHTML = metaHtml;
 }
 
-function renderProjectHighlights() {
-    const highlightsHtml = `
-        <div class="highlight-card">
-            <i class="fas fa-bolt"></i>
-            <div class="highlight-value">60%</div>
-            <div class="highlight-label">Performance Improvement</div>
-        </div>
-        <div class="highlight-card">
-            <i class="fas fa-shield-alt"></i>
-            <div class="highlight-value">Force 10</div>
-            <div class="highlight-label">Weather Resistance</div>
-        </div>
-        <div class="highlight-card">
-            <i class="fas fa-battery-full"></i>
-            <div class="highlight-value">-40%</div>
-            <div class="highlight-label">Power Usage</div>
-        </div>
-        <div class="highlight-card">
-            <i class="fas fa-rocket"></i>
-            <div class="highlight-value">99.2%</div>
-            <div class="highlight-label">Uptime</div>
-        </div>
-    `;
-    elements.projectHighlights.innerHTML = highlightsHtml;
-}
-
 function renderGoals(goals) {
     elements.goals.innerHTML = goals.map(goal => 
         `<li><i class="fas fa-check-circle"></i>${goal}</li>`
@@ -232,23 +170,6 @@ function renderTimeline(milestones) {
     `).join('');
 }
 
-function renderDeepDive(sections) {
-    elements.deepDive.innerHTML = sections.map(section => `
-        <details class="deep-dive-item">
-            <summary>${section.title}</summary>
-            <div class="deep-dive-content">
-                <p>${section.content}</p>
-            </div>
-        </details>
-    `).join('');
-}
-
-function renderLessonsLearned(lessons) {
-    elements.lessonsLearned.innerHTML = lessons.map(lesson => 
-        `<li>${lesson}</li>`
-    ).join('');
-}
-
 function renderLinks(links) {
     elements.links.innerHTML = Object.keys(links).map(key => `
         <a href="${links[key]}" class="link-item" target="_blank" rel="noopener noreferrer">
@@ -269,15 +190,6 @@ function renderGallery(images) {
         enableImagePopup(image);
         return image.outerHTML;
     }).join('');
-}
-
-function renderRelatedProjects(projects) {
-    elements.relatedProjects.innerHTML = projects.map(project => `
-        <a href="${project.link}" class="related-project">
-            <img src="${project.image}" alt="${project.title}" />
-            <h4>${project.title}</h4>
-        </a>
-    `).join('');
 }
 
 // Helper Functions
@@ -302,7 +214,6 @@ function initializePage(project) {
     
     // Render all sections
     renderProjectMeta(project);
-    renderProjectHighlights();
     renderGoals(project.details.goals);
     renderChallengeSolution(projectEnhancements.challenge, projectEnhancements.solution);
     renderRoleResponsibilities(projectEnhancements.role);
@@ -310,11 +221,8 @@ function initializePage(project) {
     renderTechStack(project.details.technologies);
     renderResults(projectEnhancements.results);
     renderTimeline(project.timeline.milestones);
-    renderDeepDive(projectEnhancements.deepDive);
-    renderLessonsLearned(projectEnhancements.lessons);
     renderLinks(project.links);
     renderGallery(project.details.media.images);
-    renderRelatedProjects(projectEnhancements.relatedProjects);
 }
 
 // Event Listeners

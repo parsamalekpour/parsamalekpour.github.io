@@ -103,40 +103,7 @@
         { "value": "60%", "label": "Performance Improvement" },
         { "value": "Force 10", "label": "Weather Resistance" },
         { "value": "-40%", "label": "Power Consumption" }
-      ],
-      "technical_deep_dive": [
-        {
-          "title": "Sensor Fusion Algorithm",
-          "content": "Implemented an Extended Kalman Filter (EKF) that combines gyroscope and accelerometer data to maintain accurate orientation tracking even in high-vibration marine environments. The algorithm runs at 1kHz with deterministic timing."
-        },
-        {
-          "title": "PCB Layout Optimization",
-          "content": "Used a 4-layer board design with dedicated power and ground planes. Implemented star routing for power distribution and guard rings around sensitive analog components to minimize noise interference."
-        },
-        {
-          "title": "Real-time OS Architecture",
-          "content": "Built on FreeRTOS with separate tasks for sensor reading (1kHz), control loop (500Hz), communication (100Hz), and system monitoring (10Hz). Used mutexes and queues for inter-task communication."
-        }
-      ],
-      "lessons_learned": [
-        "Proper PCB grounding is critical in high-vibration environments - star grounding proved most effective",
-        "Modular firmware architecture significantly reduces debugging time and enables feature additions",
-        "Industrial-grade components, while more expensive, dramatically improve reliability in harsh conditions",
-        "Deterministic timing in control loops is essential for stable satellite tracking"
       ]
-    },
-
-    "related_projects": [
-      {
-        "title": "Satellite Communication System",
-        "image": "images/related-satcom.jpg",
-        "link": "/projects/satellite-comm"
-      },
-      {
-        "title": "Marine Navigation Computer", 
-        "image": "images/related-nav.jpg",
-        "link": "/projects/navigation-computer"
-      }
-    ]
+    }
   }
 }
