@@ -1,27 +1,33 @@
 {
   "project": {
-    "id": "price-checker-001",
-    "title": "Price Checker",
-    "short_description": "As a hardware design lead, I developed a smart price checker for retail that delivers instant product details (price, name, image, discounts) to customers. The cost-effective device is now actively used in large hypermarkets, integrating seamlessly without requiring store infrastructure changes.",
+    "id": "satellite-acu-001",
+    "title": "Antenna Control Unit (ACU) Redesign",
+    "short_description": "Redesigned a marine/vehicular satellite ACU with industrial sensors, beacon receiver, and a modular firmware architecture.",
     "thumbnail": "images/price_1.png",
+
     "details": {
-      "overview": "​As a hardware designer, I led the development of an innovative, cost-effective price checker specifically designed for retail environments. This device is tailored to enhance customer experience by providing immediate and accurate product information, including price, name, discount details, and product images, directly at the point of interest. The smart price checker is currently produced and utilized in large hypermarkets, demonstrating its effectiveness and reliability in real-world retail settings. Its deployment offers a seamless integration into existing store infrastructures without requiring additional investments.​",
+      "overview": "A full redesign of a rack-mount Antenna Control Unit used in mobile satellite tracking systems for ships and trains.",
       "goals": [
-        "Achieve a 50% reduction in unit cost through design optimization for mass production.",
-        "Enable plug-and-play compatibility with all major retail software systems for instant integration.",
-        "Develop universal hardware and API standards to eliminate custom setups and accelerate onboarding."
+        "Improve connection stability in harsh sea conditions (up to force 10)",
+        "Replace low-grade sensors with industrial/automotive versions",
+        "Integrate a satellite beacon receiver for precise tracking",
+        "Make firmware structure modular, scalable, and portable"
       ],
       "key_features": [
-        "Multi-language support via configurable fonts to serve diverse markets.",
-        "Smart advertisement engine that suggests alternative products post-scan to promote savings.",
-        "Cost-effective hardware design centered on ESP32 and a single 3.5\" LCD.",
-        "Seamless, wireless communication for content updates and real-time price sync."
+        "6-schedule PID loop with deterministic timing",
+        "Sensor fusion (gyro + accel) with EKF",
+        "Beacon receiver integrated directly into PCB",
+        "Ethernet, RS485, and USB interface support",
+        "Noise-optimized PCB design with improved EMC/EMI performance"
       ],
       "technologies": [
-        "ESP32 MCU",
+        "STM32 MCU",
         "C / C++",
-        "Over-the-air (OTA)",
-        "LCD Graphic Library (TFT_eSPI)"
+        "FreeRTOS",
+        "PCB design in Altium",
+        "RS485, SPI, CAN, UART",
+        "EKF sensor fusion",
+        "Industrial IMUs"
       ],
       "media": {
         "images": [
@@ -33,52 +39,40 @@
         ]
       }
     },
+
     "timeline": {
-      "start": "2021-02",
-      "end": "2021-09",
+      "start": "2024-03",
+      "end": "2024-09",
       "milestones": [
         {
-          "title": "PCB Design",
-          "date": "2021-02",
-          "description": "Created multi-layer board with Battery Charger"
+          "title": "PCB Architecture Redesign",
+          "date": "2024-04",
+          "description": "Created multi-layer board with isolated power, optimized routing, and EMC/EMI improvements."
         },
         {
-          "title": "Graphical Design",
-          "date": "2021-03",
-          "description": "Write firmware to draw objects in LCD and design pages"
+          "title": "Firmware Refactor",
+          "date": "2024-06",
+          "description": "Modular structure added with drivers, middleware, and communication layers."
         },
         {
-          "title": "Font and Language implementation",
-          "date": "2021-04",
-          "description": "Coding a word engine for languages like Farsi and Arabic"
+          "title": "Sensor Fusion Implementation",
+          "date": "2024-07",
+          "description": "Implemented EKF-based fusion algorithm for stability in high-vibration conditions."
         },
         {
-          "title": "Server API",
-          "date": "2021-06",
-          "description": "Writing a protocol to get data and image of a product over HTTPS connection"
-        },
-        {
-          "title": "Advertisement Page ",
-          "date": "2021-07",
-          "description": "Writing a code to show advertisement"
-        },
-        {
-          "title": "OTA",
-          "date": "2021-08",
-          "description": "Add over-the-air capability "
-        },
-        {
-          "title": "Final Test",
-          "date": "2021-09",
-          "description": "Test the product in a real supermarket"
+          "title": "System-Level Testing",
+          "date": "2024-09",
+          "description": "Tested full ACU + antenna system in real marine conditions."
         }
       ]
     },
+
     "links": {
-      "github": "",
-      "demo": "",
-      "pdf_report": ""
+      "github": "https://github.com/example/acu-project",
+      "demo": "https://example.com/acu-demo",
+      "pdf_report": "docs/acu_design_report.pdf"
     },
+
     "enhancements": {
       "challenge": "The original antenna control unit struggled with connection stability in harsh marine conditions (up to force 10 winds), used low-grade sensors that failed in high-vibration environments, and had monolithic firmware that was difficult to maintain and scale.",
       "solution": "We completely redesigned the system with industrial-grade sensors, implemented a 6-schedule PID loop with deterministic timing, added EKF-based sensor fusion for stability, and created a modular firmware architecture using FreeRTOS for better maintainability and scalability.",
@@ -105,22 +99,10 @@
         }
       ],
       "results": [
-        {
-          "value": "99.2%",
-          "label": "Connection Stability"
-        },
-        {
-          "value": "60%",
-          "label": "Performance Improvement"
-        },
-        {
-          "value": "Force 10",
-          "label": "Weather Resistance"
-        },
-        {
-          "value": "-40%",
-          "label": "Power Consumption"
-        }
+        { "value": "99.2%", "label": "Connection Stability" },
+        { "value": "60%", "label": "Performance Improvement" },
+        { "value": "Force 10", "label": "Weather Resistance" },
+        { "value": "-40%", "label": "Power Consumption" }
       ]
     }
   }
