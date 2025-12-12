@@ -12,7 +12,6 @@ const elements = {
     features: document.getElementById('features'),
     tech: document.getElementById('tech'),
     resultsGrid: document.getElementById('resultsGrid'),
-    timeline: document.getElementById('timeline'),
     links: document.getElementById('links'),
     gallery: document.getElementById('gallery'),
     modal: document.getElementById('imgModal'),
@@ -160,16 +159,6 @@ function renderResults(results) {
     `).join('');
 }
 
-function renderTimeline(milestones) {
-    elements.timeline.innerHTML = milestones.map(milestone => `
-        <div class="milestone">
-            <div class="milestone-date">${milestone.date}</div>
-            <div class="milestone-title">${milestone.title}</div>
-            <div class="milestone-description">${milestone.description}</div>
-        </div>
-    `).join('');
-}
-
 function renderLinks(links) {
     elements.links.innerHTML = Object.keys(links).map(key => `
         <a href="${links[key]}" class="link-item" target="_blank" rel="noopener noreferrer">
@@ -220,7 +209,6 @@ function initializePage(project) {
     renderFeatures(project.details.key_features);
     renderTechStack(project.details.technologies);
     renderResults(projectEnhancements.results);
-    renderTimeline(project.timeline.milestones);
     renderLinks(project.links);
     renderGallery(project.details.media.images);
 }
